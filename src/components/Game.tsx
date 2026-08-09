@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
-import type { Exercise, GameConfig, PlayerKey, Scores } from '../lib/types'
-import { generateExercise, validateAnswer } from '../lib/exercises'
-import { renderExercise, exerciseLabel, OptionGrid, buildHint } from './exercise/ExerciseDisplay'
+import type { Exercise, GameConfig, PlayerKey, Scores, TopicId } from '../lib/types'
+import { generateExercise, validateAnswer } from '../lib/topics'
+import { renderExercise, exerciseLabel, OptionGrid, buildHint, ExerciseVisual } from './exercise/ExerciseDisplay'
 import { getRandomJoke } from '../lib/jokes'
-import FractionVisualizer from './FractionVisualizer'
 import Timer from './Timer'
 import HealthBar from './HealthBar'
 import { useSoundFX } from '../hooks/useSoundFX'
@@ -20,6 +19,8 @@ interface Props {
 }
 
 type Phase = 'waiting' | 'locked'
+
+const newExercise = (r: number, topics: TopicId[]) => generateExercise(Math.ceil(r / 3), topics)
 
 const MAX_HP = 100
 const DAMAGE = 25
@@ -37,7 +38,7 @@ export default function Game({ config, onGameEnd }: Props) {
   const [hp, setHp] = useState<Record<PlayerKey, number>>({ q: MAX_HP, p: MAX_HP })
   const [streak, setStreak] = useState<Record<PlayerKey, number>>({ q: 0, p: 0 })
   const [round, setRound] = useState(1)
-  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1))
+  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1, config.topics))
   const [phase, setPhase] = useState<Phase>('waiting')
   const [lockedPlayer, setLockedPlayer] = useState<PlayerKey | null>(null)
   const [secondChance, setSecondChance] = useState(false)
@@ -81,7 +82,6 @@ export default function Game({ config, onGameEnd }: Props) {
 
   const other = (p: PlayerKey): PlayerKey => p === 'q' ? 'p' : 'q'
 
-  const newExercise = (r: number) => generateExercise(Math.ceil(r / 3))
 
   const clearRoundState = () => {
     setSelectedOption(null)
@@ -98,30 +98,30 @@ export default function Game({ config, onGameEnd }: Props) {
       setJoke(getRandomJoke())
       jokeTimer.current = setTimeout(() => {
         setJoke(null)
-        setExercise(newExercise(r))
+        setExercise(newExercise(r, config.topics))
         setPhase('waiting')
         setLockedPlayer(null)
         setSecondChance(false)
         clearRoundState()
       }, 15000)
     } else {
-      setExercise(newExercise(r))
+      setExercise(newExercise(r, config.topics))
       setPhase('waiting')
       setLockedPlayer(null)
       setSecondChance(false)
       clearRoundState()
     }
-  }, [])
+  }, [config.topics])
 
   const resetRound = useCallback((r: number) => {
     if (jokeTimer.current) clearTimeout(jokeTimer.current)
     setJoke(null)
-    setExercise(newExercise(r))
+    setExercise(newExercise(r, config.topics))
     setPhase('waiting')
     setLockedPlayer(null)
     setSecondChance(false)
     clearRoundState()
-  }, [])
+  }, [config.topics])
 
   const startComeback = useCallback((loser: PlayerKey) => {
     setComebackPlayer(loser)
@@ -350,12 +350,12 @@ export default function Game({ config, onGameEnd }: Props) {
     if (jokeTimer.current) clearTimeout(jokeTimer.current)
     const r = jokeRoundRef.current
     setJoke(null)
-    setExercise(newExercise(r))
+    setExercise(newExercise(r, config.topics))
     setPhase('waiting')
     setLockedPlayer(null)
     setSecondChance(false)
     clearRoundState()
-  }, [])
+  }, [config.topics])
 
   const p1 = config.player1Name
   const p2 = config.player2Name
@@ -517,7 +517,7 @@ export default function Game({ config, onGameEnd }: Props) {
               {renderExercise(exercise, exercise.type === 'compare' ? selectedOption : null)}
             </div>
             <div className="short-screen-hide">
-              <FractionVisualizer fraction={exercise.fractionA} color="#FFD700" />
+              <ExerciseVisual exercise={exercise} color="#FFD700" />
             </div>
 
             {/* Options */}

@@ -66,6 +66,30 @@ El tema SHALL ofrecer ejercicios que pidan redondear un decimal a una posición 
 - **WHEN** se pregunta cuánto vale el `7` en `3.472`
 - **THEN** la respuesta correcta corresponde a las centésimas
 
+### Requirement: Leer y escribir decimales
+
+El tema SHALL ofrecer ejercicios que conecten el número con su nombre en español, en ambas direcciones: dado un decimal escrito en cifras, elegir cómo se lee; y dado un decimal escrito en palabras, elegir su forma en cifras. La lectura SHALL usar el vocabulario de posición en español —décimas, centésimas, milésimas— y la coma decimal, no el punto.
+
+#### Scenario: De cifras a palabras
+
+- **WHEN** se presenta `0.3` y se pregunta cómo se lee
+- **THEN** la respuesta correcta es «tres décimas»
+
+#### Scenario: De palabras a cifras
+
+- **WHEN** se presenta «veinticinco centésimas» y se pide escribirlo
+- **THEN** la respuesta correcta es `0,25`
+
+#### Scenario: Número con parte entera
+
+- **WHEN** se presenta `3.4`
+- **THEN** la respuesta correcta es «tres coma cuatro» o «tres enteros y cuatro décimas», y las demás opciones no son lecturas válidas del mismo número
+
+#### Scenario: Distractores que reflejan el error típico
+
+- **WHEN** se genera un ejercicio de lectura
+- **THEN** entre las opciones aparece la lectura de la posición vecina —por ejemplo «tres centésimas» para `0.3`— porque confundir décimas con centésimas es el error que el ejercicio busca detectar
+
 ### Requirement: Progresión de dificultad por ronda
 
 La dificultad de los ejercicios de decimales SHALL crecer con la ronda: primero una cifra decimal y valores claramente distintos entre sí, y en rondas avanzadas más cifras decimales y valores más parecidos entre sí.

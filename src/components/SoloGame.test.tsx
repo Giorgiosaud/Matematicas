@@ -60,14 +60,16 @@ vi.mock('../lib/scoreSync', () => ({ submitOrQueueScore: (...args: unknown[]) =>
 vi.mock('./Leaderboard', () => ({ default: () => <div>TOP JUGADORES</div> }))
 
 const makeExercise = (): Exercise => ({
+  topic: 'fracciones',
   type: 'mixed',
-  fractionA: { numerator: 1, denominator: 2 },
   answer: '1/2',
   displayAnswer: '1/2',
   options: ['1/2', '1/3', '1/4'],
+  payload: { fractionA: { numerator: 1, denominator: 2 } },
 })
 
-vi.mock('../lib/exercises', () => ({
+vi.mock('../lib/topics', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../lib/topics')>()),
   generateExercise: () => makeExercise(),
   validateAnswer: (exercise: Exercise, userInput: string) => userInput === String(exercise.answer),
 }))
@@ -79,6 +81,7 @@ const config: GameConfig = {
   pointsToWin: 5,
   timerSeconds: 30,
   questionLimit: 20,
+  topics: ['fracciones'],
 }
 
 const HIGHSCORE_KEY = 'fracciones:soloHighScore'

@@ -1,77 +1,24 @@
 import { motion } from 'framer-motion'
-import type { Exercise, FractionValue } from '../../lib/types'
+import type { Exercise } from '../../lib/types'
+import { getTopic } from '../../lib/topics'
 
-export function FractionDisplay({ frac }: { frac: FractionValue }) {
-  return (
-    <span className="inline-flex flex-col items-center leading-none">
-      <span>{frac.numerator}</span>
-      <span className="w-full border-t-2 border-white my-1" />
-      <span>{frac.denominator}</span>
-    </span>
-  )
-}
+// Este archivo ya no sabe nada de fracciones: despacha al renderizador del tema
+// del ejercicio. Lo que queda aquí es lo genérico — la rejilla de opciones y el
+// formato de las etiquetas, que sirven igual para cualquier tema.
 
 export function renderExercise(ex: Exercise, selectedOpt: string | null = null) {
-  if (ex.type === 'compare') {
-    const symbol = selectedOpt ?? '?'
-    const symbolColor = selectedOpt ? 'text-[#FFD700]' : 'text-white/40'
-    return (
-      <div className="flex items-center gap-3 sm:gap-5 md:gap-6 text-2xl sm:text-3xl md:text-4xl font-black">
-        <FractionDisplay frac={ex.fractionA} />
-        <span className={`text-3xl sm:text-4xl md:text-5xl w-8 sm:w-10 md:w-12 text-center transition-all ${symbolColor}`}>{symbol}</span>
-        <FractionDisplay frac={ex.fractionB!} />
-      </div>
-    )
-  }
-  if (ex.type === 'simplify') {
-    return (
-      <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-2xl sm:text-3xl md:text-4xl font-black">
-        <FractionDisplay frac={ex.fractionA} />
-        <span className="text-white/40">=</span>
-        <span className="text-[#FFD700] text-3xl sm:text-4xl md:text-5xl">?</span>
-      </div>
-    )
-  }
-  if (ex.type === 'amplify') {
-    return (
-      <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-2xl sm:text-3xl md:text-4xl font-black">
-        <FractionDisplay frac={ex.fractionA} />
-        <span className="text-white/40">=</span>
-        <div className="inline-flex flex-col items-center leading-none">
-          <span className="text-[#FFD700]">?</span>
-          <span className="w-full border-t-2 border-white my-1" />
-          <span>{ex.targetDenominator}</span>
-        </div>
-      </div>
-    )
-  }
-  if (ex.type === 'add' || ex.type === 'subtract') {
-    return (
-      <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-2xl sm:text-3xl md:text-4xl font-black">
-        <FractionDisplay frac={ex.fractionA} />
-        <span className="text-white/40">{ex.type === 'add' ? '+' : '−'}</span>
-        <FractionDisplay frac={ex.fractionB!} />
-        <span className="text-white/40">=</span>
-        <span className="text-[#FFD700] text-3xl sm:text-4xl md:text-5xl">?</span>
-      </div>
-    )
-  }
-  return (
-    <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-2xl sm:text-3xl md:text-4xl font-black">
-      <FractionDisplay frac={ex.fractionA} />
-      <span className="text-white/40">=</span>
-      <span className="text-[#FFD700] text-2xl sm:text-3xl">? y ?/?</span>
-    </div>
-  )
+  const { Render } = getTopic(ex.topic)
+  return <Render exercise={ex} selectedOption={selectedOpt} />
+}
+
+export function ExerciseVisual({ exercise, color }: { exercise: Exercise; color: string }) {
+  const { Visual } = getTopic(exercise.topic)
+  if (!Visual) return null
+  return <Visual exercise={exercise} color={color} />
 }
 
 export function exerciseLabel(ex: Exercise) {
-  if (ex.type === 'compare') return '¿Mayor >, menor < o igual =?'
-  if (ex.type === 'simplify') return 'Simplifica la fracción'
-  if (ex.type === 'amplify') return '¿Cuál es el numerador que falta?'
-  if (ex.type === 'add') return 'Suma las fracciones'
-  if (ex.type === 'subtract') return 'Resta las fracciones'
-  return 'Convierte a número mixto'
+  return getTopic(ex.topic).describe(ex)
 }
 
 // Render option label nicely (fractions inline)
@@ -161,31 +108,5 @@ export function OptionGrid({ options, locked, onSelect, wrongSelections, correct
 }
 
 export function buildHint(ex: Exercise): string {
-  if (ex.type === 'compare') {
-    const a = ex.fractionA
-    const b = ex.fractionB!
-    const da = (a.numerator / a.denominator).toFixed(2)
-    const db = (b.numerator / b.denominator).toFixed(2)
-    return `Pista: convierte a decimal → ${a.numerator}/${a.denominator} = ${da}  y  ${b.numerator}/${b.denominator} = ${db}`
-  }
-  if (ex.type === 'simplify') {
-    const { numerator: n, denominator: d } = ex.fractionA
-    return `Pista: busca el MCD de ${n} y ${d}, luego divide ambos por él`
-  }
-  if (ex.type === 'amplify') {
-    const { numerator: n, denominator: d } = ex.fractionA
-    const factor = ex.targetDenominator! / d
-    return `Pista: ${d} × ${factor} = ${ex.targetDenominator}, así que el numerador es ${n} × ${factor}`
-  }
-  if (ex.type === 'add' || ex.type === 'subtract') {
-    const a = ex.fractionA
-    const b = ex.fractionB!
-    const op = ex.type === 'add' ? '+' : '−'
-    return `Pista: busca un denominador común, transforma ambas fracciones y luego ${ex.type === 'add' ? 'suma' : 'resta'} los numeradores: ${a.numerator}/${a.denominator} ${op} ${b.numerator}/${b.denominator}`
-  }
-  // mixed
-  const { numerator: n, denominator: d } = ex.fractionA
-  const whole = Math.floor(n / d)
-  const rem = n % d
-  return `Pista: ${n} ÷ ${d} = ${whole} (resto ${rem}), entonces es ${whole} y ${rem}/${d}`
+  return getTopic(ex.topic).hint(ex)
 }

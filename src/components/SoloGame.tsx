@@ -1,18 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
-import type { Exercise, GameConfig } from '../lib/types'
-import { generateExercise, validateAnswer } from '../lib/exercises'
+import type { Exercise, GameConfig, TopicId } from '../lib/types'
+import { generateExercise, validateAnswer } from '../lib/topics'
 import { getRandomJoke } from '../lib/jokes'
 import { loadSoloHighScore, saveSoloHighScore } from '../lib/soloStorage'
 import { submitOrQueueScore } from '../lib/scoreSync'
-import FractionVisualizer from './FractionVisualizer'
 import Leaderboard from './Leaderboard'
 import Timer from './Timer'
 import { useSoundFX } from '../hooks/useSoundFX'
 import { useBGM } from '../hooks/useBGM'
 import ScreenFlash from './effects/ScreenFlash'
-import { renderExercise, exerciseLabel, OptionGrid, buildHint } from './exercise/ExerciseDisplay'
+import { renderExercise, exerciseLabel, OptionGrid, buildHint, ExerciseVisual } from './exercise/ExerciseDisplay'
 
 interface Props {
   config: GameConfig
@@ -21,7 +20,7 @@ interface Props {
 
 type Phase = 'answering' | 'feedback'
 
-const newExercise = (r: number) => generateExercise(Math.ceil(r / 3))
+const newExercise = (r: number, topics: TopicId[]) => generateExercise(Math.ceil(r / 3), topics)
 
 const BASE_POINTS = 10
 
@@ -42,7 +41,7 @@ function calcPoints(streakAfterAnswer: number, timerSeconds: number) {
 
 export default function SoloGame({ config, onExit }: Props) {
   const [round, setRound] = useState(1)
-  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1))
+  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1, config.topics))
   const [phase, setPhase] = useState<Phase>('answering')
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [revealCorrect, setRevealCorrect] = useState(false)
@@ -83,10 +82,10 @@ export default function SoloGame({ config, onExit }: Props) {
   }
 
   const advanceRound = useCallback((r: number) => {
-    setExercise(newExercise(r))
+    setExercise(newExercise(r, config.topics))
     setPhase('answering')
     clearRoundState()
-  }, [])
+  }, [config.topics])
 
   const showJokeThenAdvance = useCallback((r: number) => {
     if (r % 3 === 0) {
@@ -226,11 +225,11 @@ export default function SoloGame({ config, onExit }: Props) {
     setStreak(0)
     setBestStreak(0)
     setNewRecord(false)
-    setExercise(newExercise(1))
+    setExercise(newExercise(1, config.topics))
     setPhase('answering')
     clearRoundState()
     setShowSummary(false)
-  }, [])
+  }, [config.topics])
 
   return (
     <div className="min-h-screen overflow-y-auto text-white flex flex-col" style={{ background: 'var(--bg)' }}>
@@ -316,7 +315,7 @@ export default function SoloGame({ config, onExit }: Props) {
             >
               {renderExercise(exercise, exercise.type === 'compare' ? selectedOption : null)}
             </div>
-            <FractionVisualizer fraction={exercise.fractionA} color="#FFD700" />
+            <ExerciseVisual exercise={exercise} color="#FFD700" />
 
             <div className="flex flex-col items-center gap-1.5 w-full">
               <OptionGrid

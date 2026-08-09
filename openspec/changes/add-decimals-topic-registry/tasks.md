@@ -1,22 +1,24 @@
 ## 1. Generalizar el motor de ejercicios
 
-- [ ] 1.1 Escribir la prueba genérica del registro: recorre todos los temas registrados, corre cada generador en varias rondas y verifica la forma del `Exercise` (respuesta incluida en las opciones, mínimo dos opciones, sin duplicados). Debe fallar por ausencia del registro.
-- [ ] 1.2 Definir el `Exercise` genérico (`topic`, `type`, `answer`, `displayAnswer`, `options`, `payload`) y el contrato de tema en `src/lib/topics/types.ts`.
-- [ ] 1.3 Mover los seis generadores de fracciones a `src/lib/topics/fracciones/generators.ts`, adaptándolos al `payload`, sin cambiar su comportamiento. Las pruebas existentes de `exercises.test.ts` deben seguir pasando.
-- [ ] 1.4 Mover el renderizado de fracciones de `ExerciseDisplay.tsx` a `src/lib/topics/fracciones/Render.tsx`, incluyendo el visualizador y las pistas.
-- [ ] 1.5 Crear `src/lib/topics/index.ts` con el registro, y reescribir `generateExercise(round, topics)` para sortear tema y luego generador. Verificar que 1.1 pasa.
-- [ ] 1.6 Reducir `ExerciseDisplay.tsx` a despachar al renderizador del tema del ejercicio.
-- [ ] 1.7 Pasar `config.topics` desde `Game.tsx` y `SoloGame.tsx` al generador. Es el único cambio permitido en esos archivos.
+- [x] 1.1 Escribir la prueba genérica del registro: recorre todos los temas registrados, corre cada generador en varias rondas y verifica la forma del `Exercise` (respuesta incluida en las opciones, mínimo dos opciones, sin duplicados). Debe fallar por ausencia del registro.
+- [x] 1.2 Definir el `Exercise` genérico (`topic`, `type`, `answer`, `displayAnswer`, `options`, `payload`) y el contrato de tema en `src/lib/topics/types.ts`.
+- [x] 1.3 Mover los seis generadores de fracciones a `src/lib/topics/fracciones/generators.ts`, adaptándolos al `payload`, sin cambiar su comportamiento. Las pruebas existentes de `exercises.test.ts` deben seguir pasando.
+- [x] 1.4 Mover el renderizado de fracciones de `ExerciseDisplay.tsx` a `src/lib/topics/fracciones/Render.tsx`, incluyendo el visualizador y las pistas.
+- [x] 1.5 Crear `src/lib/topics/index.ts` con el registro, y reescribir `generateExercise(round, topics)` para sortear tema y luego generador. Verificar que 1.1 pasa.
+- [x] 1.6 Reducir `ExerciseDisplay.tsx` a despachar al renderizador del tema del ejercicio.
+- [x] 1.7 Pasar `config.topics` desde `Game.tsx` y `SoloGame.tsx` al generador. Es el único cambio permitido en esos archivos.
 - [ ] 1.8 Verificación visual con la skill `run`: jugar una partida de fracciones y confirmar que se ve y se comporta igual que antes de la refactorización.
 
 ## 2. Tema de decimales
 
 - [ ] 2.1 Escribir las pruebas del helper de decimales escalados: construcción, comparación, redondeo y conversión desde fracción, incluyendo los casos que el punto flotante calcularía mal (`0.1 + 0.2`, `0.5` vs `0.50`).
 - [ ] 2.2 Implementar el helper como enteros escalados en `src/lib/topics/decimales/decimal.ts`.
-- [ ] 2.3 Escribir las pruebas de los tres generadores según los escenarios de `specs/tema-decimales`, incluida la exclusión de fracciones periódicas y la progresión de dificultad por ronda.
-- [ ] 2.4 Implementar los generadores: comparar, convertir fracción ↔ decimal, y redondear / valor posicional.
-- [ ] 2.5 Implementar `Render.tsx` del tema y registrarlo en el índice. La prueba genérica de 1.1 ahora cubre decimales sin tocarla.
-- [ ] 2.6 Verificación visual con `run`: jugar una partida solo de decimales y revisar que los enunciados se lean bien en móvil.
+- [ ] 2.3 Escribir las pruebas del lector de decimales en español (cifras → palabras y palabras → cifras), incluidas las lecturas con parte entera y los distractores de posición vecina.
+- [ ] 2.4 Implementar el lector en `src/lib/topics/decimales/lectura.ts`.
+- [ ] 2.5 Escribir las pruebas de los cuatro generadores según los escenarios de `specs/tema-decimales`, incluida la exclusión de fracciones periódicas y la progresión de dificultad por ronda.
+- [ ] 2.6 Implementar los generadores: leer/escribir, comparar, convertir fracción ↔ decimal, y redondear / valor posicional.
+- [ ] 2.7 Implementar `Render.tsx` del tema y registrarlo en el índice. La prueba genérica de 1.1 ahora cubre decimales sin tocarla.
+- [ ] 2.8 Verificación visual con `run`: jugar una partida solo de decimales y revisar que los enunciados se lean bien en móvil.
 
 ## 3. Selección de temas en la interfaz
 

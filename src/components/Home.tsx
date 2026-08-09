@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GameConfig, GameMode } from '../lib/types'
 import { checkName } from '../lib/leaderboardApi'
+import { DEFAULT_TOPIC } from '../lib/topics'
 import Leaderboard from './Leaderboard'
 
 interface Props {
@@ -61,14 +62,14 @@ export default function Home({ onStart }: Props) {
         return
       }
       saveNames(name, player2Name.trim())
-      onStart({ mode, player1Name: name, player2Name: player2Name.trim() || 'Jugador 2', pointsToWin, timerSeconds, questionLimit })
+      onStart({ mode, player1Name: name, player2Name: player2Name.trim() || 'Jugador 2', pointsToWin, timerSeconds, questionLimit, topics: [DEFAULT_TOPIC] })
       return
     }
 
     const p1 = player1Name.trim() || 'Jugador 1'
     const p2 = player2Name.trim() || 'Jugador 2'
     saveNames(player1Name.trim(), player2Name.trim())
-    onStart({ mode, player1Name: p1, player2Name: p2, pointsToWin, timerSeconds, questionLimit })
+    onStart({ mode, player1Name: p1, player2Name: p2, pointsToWin, timerSeconds, questionLimit, topics: [DEFAULT_TOPIC] })
   }
 
   return (

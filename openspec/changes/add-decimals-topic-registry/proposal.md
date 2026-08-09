@@ -5,7 +5,7 @@ La app nació como "una parte de matemáticas" — fracciones — pero los niño
 ## What Changes
 
 - **Registro de temas**: `Exercise` se generaliza — conserva solo lo que el juego consume (`topic`, `type`, `answer`, `displayAnswer`, `options`) y mueve los datos propios de cada tema a un `payload` opaco. Cada tema pasa a ser una carpeta autocontenida (generadores + renderizado) registrada en un índice.
-- **Módulo de decimales** con tres familias de ejercicios: comparar decimales, convertir fracción ↔ decimal, y redondear / valor posicional.
+- **Módulo de decimales** con cuatro familias de ejercicios: leer y escribir decimales (cifras ↔ palabras), comparar decimales, convertir fracción ↔ decimal, y redondear / valor posicional.
 - **Selección múltiple de temas** en el Home: el jugador marca uno o varios y las preguntas de la sesión salen mezcladas de todos los marcados. La selección se recuerda entre sesiones.
 - **Leaderboard segmentado por categoría de tema** — tres cubos fijos: `fracciones`, `decimales`, `mixto` (cuando la sesión combina temas). Se suma a la segmentación por cantidad de preguntas que ya existe. **BREAKING** para el esquema de D1: la llave única de `scores` cambia y la tabla se reconstruye; los puntajes existentes se preservan y se clasifican como `fracciones`.
 - **No cambia** la mecánica de juego: puntaje, rachas, HP, timer, sonidos y efectos quedan igual. `Game.tsx` y `SoloGame.tsx` solo pasan a reenviar los temas activos al generador.

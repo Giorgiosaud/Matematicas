@@ -1,5 +1,28 @@
-import type { Exercise, ExerciseType, FractionValue } from './types'
-import { compareFractions, simplifyFraction, addFractions, subtractFractions, gcd, fractionToString, normalizeAnswer } from './fractions'
+import type { Exercise } from '../types'
+import type { FractionValue } from '../../types'
+import {
+  compareFractions,
+  simplifyFraction,
+  addFractions,
+  subtractFractions,
+  gcd,
+  fractionToString,
+} from '../../fractions'
+
+// Datos propios del tema. Solo este archivo y su Render los interpretan.
+export interface FraccionesPayload {
+  fractionA: FractionValue
+  fractionB?: FractionValue
+  targetDenominator?: number
+  wholePartA?: number
+}
+
+// Único punto de estrechamiento del payload en todo el tema: si un ejercicio
+// dice ser de fracciones, su payload tiene esta forma porque lo produjo alguno
+// de los generadores de abajo.
+export function fraccionesPayload(exercise: Exercise): FraccionesPayload {
+  return exercise.payload as FraccionesPayload
+}
 
 function randInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -31,6 +54,10 @@ function randomFraction(round: number): FractionValue {
   return { numerator: n, denominator: d }
 }
 
+function make(type: string, answer: string, options: string[], payload: FraccionesPayload): Exercise {
+  return { topic: 'fracciones', type, answer, displayAnswer: answer, options, payload }
+}
+
 // ── Compare ──────────────────────────────────────────────────────────────────
 
 function makeCompare(round: number): Exercise {
@@ -39,7 +66,7 @@ function makeCompare(round: number): Exercise {
   const answer = compareFractions(a, b)
   // compare always has exactly 3 options — show all of them
   const options = shuffle(['>', '<', '='])
-  return { type: 'compare', fractionA: a, fractionB: b, answer, displayAnswer: answer, options }
+  return make('compare', answer, options, { fractionA: a, fractionB: b })
 }
 
 // ── Simplify ─────────────────────────────────────────────────────────────────
@@ -75,7 +102,7 @@ function makeSimplify(round: number): Exercise {
   const answer = fractionToString(simplified)
   const distractors = simplifyDistractors(simplified, denominator, round)
   const options = shuffle(dedupe([answer, ...distractors]).slice(0, 6))
-  return { type: 'simplify', fractionA: { numerator, denominator }, answer, displayAnswer: answer, options }
+  return make('simplify', answer, options, { fractionA: { numerator, denominator } })
 }
 
 // ── Amplify ──────────────────────────────────────────────────────────────────
@@ -111,14 +138,10 @@ function makeAmplify(round: number): Exercise {
   const answer = String(targetNumerator)
   const distractors = amplifyDistractors(targetNumerator, targetDenominator)
   const options = shuffle(dedupe([answer, ...distractors]).slice(0, 6))
-  return {
-    type: 'amplify',
+  return make('amplify', answer, options, {
     fractionA: { numerator: n, denominator: d },
     targetDenominator,
-    answer,
-    displayAnswer: answer,
-    options,
-  }
+  })
 }
 
 // ── Mixed ────────────────────────────────────────────────────────────────────
@@ -160,14 +183,10 @@ function makeMixed(round: number): Exercise {
   const displayAnswer = `${whole} y ${rem}/${d}`
   const distractors = mixedDistractors(whole, rem, d)
   const options = shuffle(dedupe([displayAnswer, ...distractors]).slice(0, 6))
-  return {
-    type: 'mixed',
+  return make('mixed', displayAnswer, options, {
     fractionA: { numerator, denominator: d },
     wholePartA: whole,
-    answer: displayAnswer,
-    displayAnswer,
-    options,
-  }
+  })
 }
 
 // ── Add / Subtract ───────────────────────────────────────────────────────────
@@ -208,36 +227,14 @@ function makeAddSubtract(round: number, isAdd: boolean): Exercise {
   const answer = fractionToString(simplified)
   const distractors = addSubtractDistractors(simplified, a, b, isAdd)
   const options = shuffle(dedupe([answer, ...distractors]).slice(0, 6))
-  return {
-    type: isAdd ? 'add' : 'subtract',
-    fractionA: a,
-    fractionB: b,
-    answer,
-    displayAnswer: answer,
-    options,
-  }
+  return make(isAdd ? 'add' : 'subtract', answer, options, { fractionA: a, fractionB: b })
 }
 
-// ── Public API ───────────────────────────────────────────────────────────────
-
-const generators: Record<ExerciseType, (round: number) => Exercise> = {
+export const generators: Record<string, (round: number) => Exercise> = {
   compare: makeCompare,
   simplify: makeSimplify,
   amplify: makeAmplify,
   mixed: makeMixed,
   add: (round) => makeAddSubtract(round, true),
   subtract: (round) => makeAddSubtract(round, false),
-}
-
-const types: ExerciseType[] = ['compare', 'simplify', 'amplify', 'mixed', 'add', 'subtract']
-
-export function generateExercise(round: number): Exercise {
-  const type = types[randInt(0, types.length - 1)]
-  return generators[type](round)
-}
-
-export function validateAnswer(exercise: Exercise, userInput: string): boolean {
-  const normalized = normalizeAnswer(userInput).toLowerCase()
-  const expected = normalizeAnswer(String(exercise.answer)).toLowerCase()
-  return normalized.replace(/\s/g, '') === expected.replace(/\s/g, '')
 }
