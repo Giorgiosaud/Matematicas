@@ -82,8 +82,8 @@ El tema SHALL ofrecer ejercicios que conecten el número con su nombre en españ
 
 #### Scenario: Número con parte entera
 
-- **WHEN** se presenta `3.4`
-- **THEN** la respuesta correcta es «tres coma cuatro» o «tres enteros y cuatro décimas», y las demás opciones no son lecturas válidas del mismo número
+- **WHEN** se presenta `3,4`
+- **THEN** la respuesta correcta es «tres enteros y cuatro décimas» — la lectura por posición, que es la que practica el vocabulario del tema — y las demás opciones no son lecturas válidas del mismo número
 
 #### Scenario: Distractores que reflejan el error típico
 

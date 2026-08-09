@@ -52,8 +52,9 @@ export function OptionLabel({ text }: { text: string }) {
       </span>
     )
   }
-  // number
-  return <span className="text-xl font-bold">{text}</span>
+  // texto largo (lecturas de decimales) o número suelto
+  const size = text.length > 18 ? 'text-sm' : text.length > 10 ? 'text-base' : 'text-xl'
+  return <span className={`${size} font-bold leading-tight text-center`}>{text}</span>
 }
 
 interface OptionGridProps {
@@ -68,10 +69,15 @@ interface OptionGridProps {
 
 export function OptionGrid({ options, locked, onSelect, wrongSelections, correctAnswer, revealCorrect, color }: OptionGridProps) {
   const accentColor = color === 'blue' ? '#1D9BF0' : '#FF3B3B'
+  // Las lecturas de decimales ("ciento veinticinco milésimas") no caben en tres
+  // columnas: la rejilla se ensancha según la opción más larga.
+  const longest = Math.max(...options.map(o => o.length))
+  const wide = longest > 10
+  const columns = longest > 18 ? 'grid-cols-1' : wide ? 'grid-cols-2' : 'grid-cols-3'
   const canClick = locked && !revealCorrect
 
   return (
-    <div className={`grid gap-1.5 sm:gap-2 grid-cols-3 w-full max-w-xs sm:max-w-sm transition-opacity ${!locked ? 'opacity-40' : ''}`}>
+    <div className={`grid gap-1.5 sm:gap-2 ${columns} w-full ${wide ? 'max-w-md' : 'max-w-xs sm:max-w-sm'} transition-opacity ${!locked ? 'opacity-40' : ''}`}>
       {options.map((opt, i) => {
         const isWrong = wrongSelections.includes(opt)
         const isCorrect = revealCorrect && opt === correctAnswer

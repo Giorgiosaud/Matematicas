@@ -11,13 +11,13 @@
 
 ## 2. Tema de decimales
 
-- [ ] 2.1 Escribir las pruebas del helper de decimales escalados: construcción, comparación, redondeo y conversión desde fracción, incluyendo los casos que el punto flotante calcularía mal (`0.1 + 0.2`, `0.5` vs `0.50`).
-- [ ] 2.2 Implementar el helper como enteros escalados en `src/lib/topics/decimales/decimal.ts`.
-- [ ] 2.3 Escribir las pruebas del lector de decimales en español (cifras → palabras y palabras → cifras), incluidas las lecturas con parte entera y los distractores de posición vecina.
-- [ ] 2.4 Implementar el lector en `src/lib/topics/decimales/lectura.ts`.
-- [ ] 2.5 Escribir las pruebas de los cuatro generadores según los escenarios de `specs/tema-decimales`, incluida la exclusión de fracciones periódicas y la progresión de dificultad por ronda.
-- [ ] 2.6 Implementar los generadores: leer/escribir, comparar, convertir fracción ↔ decimal, y redondear / valor posicional.
-- [ ] 2.7 Implementar `Render.tsx` del tema y registrarlo en el índice. La prueba genérica de 1.1 ahora cubre decimales sin tocarla.
+- [x] 2.1 Escribir las pruebas del helper de decimales escalados: construcción, comparación, redondeo y conversión desde fracción, incluyendo los casos que el punto flotante calcularía mal (`0.1 + 0.2`, `0.5` vs `0.50`).
+- [x] 2.2 Implementar el helper como enteros escalados en `src/lib/topics/decimales/decimal.ts`.
+- [x] 2.3 Escribir las pruebas del lector de decimales en español (cifras → palabras y palabras → cifras), incluidas las lecturas con parte entera y los distractores de posición vecina.
+- [x] 2.4 Implementar el lector en `src/lib/topics/decimales/lectura.ts`.
+- [x] 2.5 Escribir las pruebas de los cuatro generadores según los escenarios de `specs/tema-decimales`, incluida la exclusión de fracciones periódicas y la progresión de dificultad por ronda.
+- [x] 2.6 Implementar los generadores: leer/escribir, comparar, convertir fracción ↔ decimal, y redondear / valor posicional.
+- [x] 2.7 Implementar `Render.tsx` del tema y registrarlo en el índice. La prueba genérica de 1.1 ahora cubre decimales sin tocarla.
 - [ ] 2.8 Verificación visual con `run`: jugar una partida solo de decimales y revisar que los enunciados se lean bien en móvil.
 
 ## 3. Selección de temas en la interfaz

@@ -1,10 +1,12 @@
 import type { Exercise, Topic, TopicId } from './types'
 import { fracciones } from './fracciones'
+import { decimales } from './decimales'
 
 // Única fuente de verdad sobre qué temas existen. Agregar un tema es crear su
 // carpeta y añadirlo aquí — ninguna pantalla de juego se entera.
 export const TOPICS: Record<string, Topic> = {
   fracciones,
+  decimales,
 }
 
 export const TOPIC_LIST: Topic[] = Object.values(TOPICS)
