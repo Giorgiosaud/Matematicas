@@ -78,3 +78,54 @@ describe('Home — solo mode name validation', () => {
     await waitFor(() => expect(onStart).toHaveBeenCalledWith(expect.objectContaining({ mode: 'solo', player1Name: 'Ana' })))
   })
 })
+
+describe('Home — selección de temas', () => {
+  it('arranca con fracciones marcado en un dispositivo nuevo', () => {
+    render(<Home onStart={vi.fn()} />)
+
+    expect(screen.getByRole('checkbox', { name: /FRACCIONES/ })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: /DECIMALES/ })).not.toBeChecked()
+  })
+
+  it('permite marcar varios temas y los pasa a la partida', async () => {
+    vi.mocked(checkName).mockResolvedValue('available')
+    const onStart = vi.fn()
+    render(<Home onStart={onStart} />)
+    selectSoloMode()
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /DECIMALES/ }))
+    fireEvent.change(nameInput(), { target: { value: 'Ana' } })
+    fireEvent.click(playButton())
+
+    await waitFor(() => expect(onStart).toHaveBeenCalledWith(
+      expect.objectContaining({ topics: ['fracciones', 'decimales'] })
+    ))
+  })
+
+  it('impide jugar sin ningún tema marcado y lo explica', () => {
+    const onStart = vi.fn()
+    render(<Home onStart={onStart} />)
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /FRACCIONES/ }))
+
+    expect(screen.getByText('Elige al menos un tema para jugar')).toBeInTheDocument()
+    expect(playButton()).toBeDisabled()
+    fireEvent.click(playButton())
+    expect(onStart).not.toHaveBeenCalled()
+  })
+
+  it('recuerda la selección de la sesión anterior', () => {
+    localStorage.setItem('fracciones:topics', JSON.stringify(['decimales']))
+    render(<Home onStart={vi.fn()} />)
+
+    expect(screen.getByRole('checkbox', { name: /DECIMALES/ })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: /FRACCIONES/ })).not.toBeChecked()
+  })
+
+  it('ignora un tema guardado que ya no existe', () => {
+    localStorage.setItem('fracciones:topics', JSON.stringify(['algebra']))
+    render(<Home onStart={vi.fn()} />)
+
+    expect(screen.getByRole('checkbox', { name: /FRACCIONES/ })).toBeChecked()
+  })
+})

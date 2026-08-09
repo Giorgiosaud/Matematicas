@@ -73,7 +73,8 @@ export function OptionGrid({ options, locked, onSelect, wrongSelections, correct
   // columnas: la rejilla se ensancha según la opción más larga.
   const longest = Math.max(...options.map(o => o.length))
   const wide = longest > 10
-  const columns = longest > 18 ? 'grid-cols-1' : wide ? 'grid-cols-2' : 'grid-cols-3'
+  // Cuatro opciones cortas quedan mejor en 2×2 que en 3+1 desbalanceado.
+  const columns = longest > 18 ? 'grid-cols-1' : wide || options.length === 4 ? 'grid-cols-2' : 'grid-cols-3'
   const canClick = locked && !revealCorrect
 
   return (

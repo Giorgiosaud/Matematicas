@@ -18,15 +18,15 @@
 - [x] 2.5 Escribir las pruebas de los cuatro generadores según los escenarios de `specs/tema-decimales`, incluida la exclusión de fracciones periódicas y la progresión de dificultad por ronda.
 - [x] 2.6 Implementar los generadores: leer/escribir, comparar, convertir fracción ↔ decimal, y redondear / valor posicional.
 - [x] 2.7 Implementar `Render.tsx` del tema y registrarlo en el índice. La prueba genérica de 1.1 ahora cubre decimales sin tocarla.
-- [ ] 2.8 Verificación visual con `run`: jugar una partida solo de decimales y revisar que los enunciados se lean bien en móvil.
+- [x] 2.8 Verificación visual con `run`: jugar una partida solo de decimales y revisar que los enunciados se lean bien en móvil.
 
 ## 3. Selección de temas en la interfaz
 
-- [ ] 3.1 Consultar `https://ds.bepartnerlabs.com/registry/components.json` e identificar el componente de BPL DS más cercano a un grupo de chips de selección múltiple.
-- [ ] 3.2 Escribir las pruebas de `Home` según los escenarios de `specs/seleccion-temas`: selección múltiple, botón deshabilitado sin temas, valor por defecto en dispositivo nuevo, persistencia, tema persistido inexistente, almacenamiento local no disponible.
-- [ ] 3.3 Agregar `topics` a `GameConfig` y persistir la selección junto a los nombres de jugador.
-- [ ] 3.4 Construir el selector siguiendo BPL DS — tokens `--<componente>-*`, estado con ARIA y pseudo-clases, sin clases toggle — y **sin agregar clases de Tailwind**.
-- [ ] 3.5 Verificación visual con `run`: comprobar que el selector convive con la estética del Home y que se usa cómodo con el pulgar en un teléfono.
+- [x] 3.1 Consultar `https://ds.bepartnerlabs.com/registry/components.json` e identificar el componente de BPL DS más cercano a un grupo de chips de selección múltiple.
+- [x] 3.2 Escribir las pruebas de `Home` según los escenarios de `specs/seleccion-temas`: selección múltiple, botón deshabilitado sin temas, valor por defecto en dispositivo nuevo, persistencia, tema persistido inexistente, almacenamiento local no disponible.
+- [x] 3.3 Agregar `topics` a `GameConfig` y persistir la selección junto a los nombres de jugador.
+- [x] 3.4 Construir el selector siguiendo BPL DS — tokens `--<componente>-*`, estado con ARIA y pseudo-clases, sin clases toggle — y **sin agregar clases de Tailwind**.
+- [x] 3.5 Verificación visual con `run`: comprobar que el selector convive con la estética del Home y que se usa cómodo con el pulgar en un teléfono.
 
 ## 4. Leaderboard por categoría de tema
 
