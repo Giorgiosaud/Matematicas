@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TOPICS, TOPIC_LIST, generateExercise } from './index'
+import { TOPICS, TOPIC_LIST, generateExercise, getTopic, isTopicId } from './index'
 import type { Exercise } from './types'
 
 const ROUNDS = [1, 2, 3, 5, 8, 13]
@@ -87,5 +87,31 @@ describe('generateExercise', () => {
 
   it('cae a fracciones cuando la lista de temas viene vacía', () => {
     expect(generateExercise(1, []).topic).toBe('fracciones')
+  })
+})
+
+describe('isTopicId', () => {
+  it('acepta los temas registrados', () => {
+    for (const topic of TOPIC_LIST) expect(isTopicId(topic.id)).toBe(true)
+  })
+
+  it('rechaza las propiedades heredadas de Object', () => {
+    // Con el operador `in` en vez de Object.hasOwn, 'constructor' pasaría por
+    // tema válido y getTopic devolvería una función del prototipo.
+    expect(isTopicId('constructor')).toBe(false)
+    expect(isTopicId('toString')).toBe(false)
+    expect(isTopicId('__proto__')).toBe(false)
+  })
+
+  it('rechaza cualquier otra cosa', () => {
+    expect(isTopicId('algebra')).toBe(false)
+    expect(isTopicId(undefined)).toBe(false)
+    expect(isTopicId(3)).toBe(false)
+  })
+})
+
+describe('getTopic', () => {
+  it('cae al tema por defecto ante un id heredado del prototipo', () => {
+    expect(getTopic('constructor' as never).id).toBe('fracciones')
   })
 })

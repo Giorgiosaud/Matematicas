@@ -41,8 +41,8 @@
 
 ## 5. Cierre
 
-- [ ] 5.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
-- [ ] 5.2 Revisión de código (skill `requesting-code-review`) sobre el diff completo.
-- [ ] 5.3 Actualizar `CLAUDE.md`: el registro de temas sustituye la descripción actual del motor de ejercicios, y la tabla queda segmentada también por categoría.
+- [x] 5.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
+- [x] 5.2 Revisión de código (skill `requesting-code-review`) sobre el diff completo.
+- [x] 5.3 Actualizar `CLAUDE.md`: el registro de temas sustituye la descripción actual del motor de ejercicios, y la tabla queda segmentada también por categoría.
 - [ ] 5.4 Aplicar la migración a remoto y desplegar, en el orden del plan de migración del diseño: base de datos, Worker, front.
 - [ ] 5.5 Archivar el cambio con `openspec archive add-decimals-topic-registry` para que las tres capacidades pasen a `openspec/specs/`.

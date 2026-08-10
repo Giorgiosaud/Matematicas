@@ -183,7 +183,10 @@ function makeRedondear(round: number): Exercise {
 function makeValorPosicional(round: number): Exercise {
   const scale = Math.max(2, maxScale(round))
   const value = decimal(randInt(1, 9) * 10 ** scale + randInt(1, 10 ** scale - 1), scale)
-  const position = randInt(1, scale)
+  // Se pregunta por una cifra distinta de cero: "cero décimas" es una respuesta
+  // válida pero no enseña nada, y deja el ejercicio sin sustancia.
+  const posiciones = Array.from({ length: scale }, (_, i) => i + 1).filter(p => digitAt(value, p) !== 0)
+  const position = posiciones.length > 0 ? posiciones[randInt(0, posiciones.length - 1)] : 1
   const digit = digitAt(value, position)
   const nombrar = (n: number, pos: number) => `${numeroEnPalabras(n, true)} ${nombrePosicion(pos, n !== 1)}`
   const answer = nombrar(digit, position)

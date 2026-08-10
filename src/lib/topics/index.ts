@@ -14,11 +14,15 @@ export const TOPIC_LIST: Topic[] = Object.values(TOPICS)
 export const DEFAULT_TOPIC: TopicId = 'fracciones'
 
 export function getTopic(id: TopicId): Topic {
-  return TOPICS[id] ?? TOPICS[DEFAULT_TOPIC]
+  return isTopicId(id) ? TOPICS[id] : TOPICS[DEFAULT_TOPIC]
 }
 
+// `Object.hasOwn` y no `in`: con `in`, cualquier propiedad heredada de Object
+// ('constructor', 'toString') pasaría por tema válido, y una selección
+// guardada corrupta acabaría intentando generar ejercicios con una función
+// del prototipo.
 export function isTopicId(value: unknown): value is TopicId {
-  return typeof value === 'string' && value in TOPICS
+  return typeof value === 'string' && Object.hasOwn(TOPICS, value)
 }
 
 function pick<T>(items: T[]): T {

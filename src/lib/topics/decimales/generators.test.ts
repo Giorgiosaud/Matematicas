@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { generators, decimalesPayload } from './generators'
-import { compare, format, fromFraction, roundTo } from './decimal'
+import { compare, digitAt, format, fromFraction, roundTo } from './decimal'
 import { leerDecimal } from './lectura'
 
 const muestras = (type: keyof typeof generators, round: number, n = 60) =>
@@ -102,6 +102,16 @@ describe('valor posicional', () => {
       const nombres = ['décima', 'centésima', 'milésima']
       expect(ex.answer).toContain(nombres[position! - 1])
       expect(value.scale).toBeGreaterThanOrEqual(position!)
+    }
+  })
+})
+
+describe('valor posicional — la cifra preguntada', () => {
+  it('nunca pregunta por un cero', () => {
+    // "cero décimas" es una respuesta válida pero vacía de contenido.
+    for (const ex of muestras('valor-posicional', 8, 200)) {
+      const { value, position } = decimalesPayload(ex)
+      expect(digitAt(value, position!)).not.toBe(0)
     }
   })
 })
