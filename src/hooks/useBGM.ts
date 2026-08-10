@@ -127,13 +127,15 @@ export function useBGM() {
     return { ctx: ctxRef.current, master: masterRef.current! }
   }, [])
 
-  const scheduleNext = useCallback(() => {
+  // Expresión de función con nombre: `tick` se referencia a sí misma para
+  // reprogramarse, sin depender de la variable que aún no está declarada.
+  const scheduleNext = useCallback(function tick() {
     if (!runningRef.current) return
     const { ctx, master } = getCtx()
     const loopDuration = scheduleLoop(ctx, master, nextLoopRef.current, bpmRef.current, dangerRef.current)
     const msUntilNext = (nextLoopRef.current - ctx.currentTime + loopDuration - 0.1) * 1000
     nextLoopRef.current += loopDuration
-    timerRef.current = setTimeout(scheduleNext, Math.max(0, msUntilNext))
+    timerRef.current = setTimeout(tick, Math.max(0, msUntilNext))
   }, [getCtx])
 
   const start = useCallback(() => {

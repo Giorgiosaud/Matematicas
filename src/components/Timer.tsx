@@ -8,9 +8,9 @@ interface Props {
 }
 
 export default function Timer({ seconds, onExpire, running }: Props) {
+  // El padre remonta el Timer en cada ronda (`key={timerKey}`), así que el
+  // estado inicial ya es el reseteo: no hace falta un efecto que lo repita.
   const [remaining, setRemaining] = useState(seconds)
-
-  useEffect(() => { setRemaining(seconds) }, [seconds])
 
   useEffect(() => {
     if (!running) return

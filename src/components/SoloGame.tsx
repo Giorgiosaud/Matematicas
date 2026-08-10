@@ -12,7 +12,8 @@ import Timer from './Timer'
 import { useSoundFX } from '../hooks/useSoundFX'
 import { useBGM } from '../hooks/useBGM'
 import ScreenFlash from './effects/ScreenFlash'
-import { renderExercise, exerciseLabel, OptionGrid, buildHint, ExerciseVisual } from './exercise/ExerciseDisplay'
+import { ExerciseStatement, OptionGrid, ExerciseVisual } from './exercise/ExerciseDisplay'
+import { exerciseLabel, buildHint } from './exercise/exerciseText'
 
 interface Props {
   config: GameConfig
@@ -66,6 +67,9 @@ export default function SoloGame({ config, onExit }: Props) {
 
   const sfx = useSoundFX()
   const bgm = useBGM()
+  // Se extraen para poder declararlas como dependencias del efecto sin arrastrar
+  // el objeto entero, que cambia en cada render.
+  const { start: startBgm, stop: stopBgm } = bgm
 
   const [flash, setFlash] = useState<{ color: string; trigger: number }>({ color: '#ffffff', trigger: 0 })
   const fireFlash = useCallback((color: string) => setFlash(f => ({ color, trigger: f.trigger + 1 })), [])
@@ -166,14 +170,14 @@ export default function SoloGame({ config, onExit }: Props) {
   // reference on every render) so the loop runs once and isn't restarted on
   // top of itself each time an answer updates state — that caused overlap.
   useEffect(() => {
-    bgm.start()
-    return () => { bgm.stop() }
-  }, [bgm.start, bgm.stop])
+    startBgm()
+    return () => { stopBgm() }
+  }, [startBgm, stopBgm])
 
   // Show hint after 8s without an answer
   useEffect(() => {
     if (phase !== 'answering' || feedback || selectedOption) return
-    setShowHint(false)
+    // Ocultarla ya lo hace clearRoundState al empezar la ronda.
     const id = setTimeout(() => setShowHint(true), 8000)
     return () => clearTimeout(id)
   }, [phase, timerKey, feedback, selectedOption])
@@ -314,7 +318,7 @@ export default function SoloGame({ config, onExit }: Props) {
               className="rounded-3xl px-5 sm:px-7 md:px-10 py-4 sm:py-5 md:py-6"
               style={{ background: 'var(--surface)', border: '3px solid #000', boxShadow: '6px 6px 0 #000' }}
             >
-              {renderExercise(exercise, exercise.type === 'compare' ? selectedOption : null)}
+              <ExerciseStatement exercise={exercise} selectedOption={exercise.type === 'compare' || exercise.type === 'comparar' ? selectedOption : null} />
             </div>
             <ExerciseVisual exercise={exercise} color="#FFD700" />
 

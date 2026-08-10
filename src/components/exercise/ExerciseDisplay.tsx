@@ -6,19 +6,15 @@ import { getTopic } from '../../lib/topics'
 // del ejercicio. Lo que queda aquí es lo genérico — la rejilla de opciones y el
 // formato de las etiquetas, que sirven igual para cualquier tema.
 
-export function renderExercise(ex: Exercise, selectedOpt: string | null = null) {
-  const { Render } = getTopic(ex.topic)
-  return <Render exercise={ex} selectedOption={selectedOpt} />
+export function ExerciseStatement({ exercise, selectedOption = null }: { exercise: Exercise; selectedOption?: string | null }) {
+  const { Render } = getTopic(exercise.topic)
+  return <Render exercise={exercise} selectedOption={selectedOption} />
 }
 
 export function ExerciseVisual({ exercise, color }: { exercise: Exercise; color: string }) {
   const { Visual } = getTopic(exercise.topic)
   if (!Visual) return null
   return <Visual exercise={exercise} color={color} />
-}
-
-export function exerciseLabel(ex: Exercise) {
-  return getTopic(ex.topic).describe(ex)
 }
 
 // Render option label nicely (fractions inline)
@@ -114,6 +110,3 @@ export function OptionGrid({ options, locked, onSelect, wrongSelections, correct
   )
 }
 
-export function buildHint(ex: Exercise): string {
-  return getTopic(ex.topic).hint(ex)
-}

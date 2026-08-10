@@ -24,17 +24,16 @@ interface Props {
   limit?: number
 }
 
-export default function Leaderboard({ questionLimit, category, limit = 10 }: Props) {
+// La tabla se remonta al cambiar de categoría o de configuración, así que su
+// estado inicial ya es "cargando": el efecto solo escribe estado cuando llega
+// la respuesta, nunca de forma síncrona.
+function Tabla({ questionLimit, category, limit }: { questionLimit: number; category: TopicCategory; limit: number }) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [status, setStatus] = useState<Status>('loading')
-  // Se abre en la categoría de la sesión, pero el jugador puede curiosear las
-  // otras — media gracia de la tabla es ver contra quién se compite.
-  const [selected, setSelected] = useState<TopicCategory>(category)
 
   useEffect(() => {
     let cancelled = false
-    setStatus('loading')
-    fetchTop(questionLimit, selected, limit).then((result) => {
+    fetchTop(questionLimit, category, limit).then((result) => {
       if (cancelled) return
       if (result === null) setStatus('error')
       else if (result.length === 0) setStatus('empty')
@@ -44,7 +43,32 @@ export default function Leaderboard({ questionLimit, category, limit = 10 }: Pro
       }
     })
     return () => { cancelled = true }
-  }, [questionLimit, selected, limit])
+  }, [questionLimit, category, limit])
+
+  if (status === 'loading') return <p className="text-white/50 text-sm text-center">Cargando...</p>
+  if (status === 'error') return <p className="text-white/50 text-sm text-center">No se pudo cargar la tabla.</p>
+  if (status === 'empty') return <p className="text-white/50 text-sm text-center">¡Sé el primero en aparecer aquí!</p>
+
+  return (
+    <ol className="flex flex-col gap-1">
+      {entries.map((entry, i) => (
+        <li key={entry.name} className="flex items-center justify-between text-sm text-white bg-[#16162A] rounded-lg px-3 py-1.5">
+          <span className="flex items-center gap-2">
+            <span className="text-white/40 w-4 text-right">{i + 1}</span>
+            <span className="font-bold">{entry.name}</span>
+            <span className="text-white/40 text-xs">⏱ {formatTimer(entry.bestTimerSeconds)}</span>
+          </span>
+          <span className="text-[#FFD700]">{entry.bestScore} pts <span className="text-white/40">· {entry.bestStreak} 🔥</span></span>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+export default function Leaderboard({ questionLimit, category, limit = 10 }: Props) {
+  // Se abre en la categoría de la sesión, pero el jugador puede curiosear las
+  // otras — media gracia de la tabla es ver contra quién se compite.
+  const [selected, setSelected] = useState<TopicCategory>(category)
 
   return (
     <div className="w-full max-w-xs mx-auto">
@@ -68,23 +92,7 @@ export default function Leaderboard({ questionLimit, category, limit = 10 }: Pro
         ))}
       </div>
 
-      {status === 'loading' && <p className="text-white/50 text-sm text-center">Cargando...</p>}
-      {status === 'error' && <p className="text-white/50 text-sm text-center">No se pudo cargar la tabla.</p>}
-      {status === 'empty' && <p className="text-white/50 text-sm text-center">¡Sé el primero en aparecer aquí!</p>}
-      {status === 'ready' && (
-        <ol className="flex flex-col gap-1">
-          {entries.map((entry, i) => (
-            <li key={entry.name} className="flex items-center justify-between text-sm text-white bg-[#16162A] rounded-lg px-3 py-1.5">
-              <span className="flex items-center gap-2">
-                <span className="text-white/40 w-4 text-right">{i + 1}</span>
-                <span className="font-bold">{entry.name}</span>
-                <span className="text-white/40 text-xs">⏱ {formatTimer(entry.bestTimerSeconds)}</span>
-              </span>
-              <span className="text-[#FFD700]">{entry.bestScore} pts <span className="text-white/40">· {entry.bestStreak} 🔥</span></span>
-            </li>
-          ))}
-        </ol>
-      )}
+      <Tabla key={`${questionLimit}-${selected}`} questionLimit={questionLimit} category={selected} limit={limit} />
     </div>
   )
 }

@@ -5,6 +5,7 @@ import SoloGame from './components/SoloGame'
 import FinalScoreboard from './components/FinalScoreboard'
 import { registerScoreSync } from './lib/scoreSync'
 import { DEFAULT_TOPIC } from './lib/topics'
+import { recordWin } from './lib/wins'
 import type { GameConfig, PlayerKey, Screen, Scores } from './lib/types'
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
   }
 
   const handleGameEnd = (scores: Scores, cfg: GameConfig, w: PlayerKey) => {
+    recordWin(w === 'q' ? cfg.player1Name : cfg.player2Name)
     setFinalScores(scores)
     setConfig(cfg)
     setWinner(w)

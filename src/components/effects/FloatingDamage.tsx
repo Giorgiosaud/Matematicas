@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 interface Props {
@@ -8,14 +7,9 @@ interface Props {
 }
 
 export default function FloatingDamage({ value, side, trigger }: Props) {
-  const [items, setItems] = useState<{ id: number; value: string }[]>([])
-
-  useEffect(() => {
-    if (trigger === 0) return
-    const id = trigger
-    setItems(prev => [...prev, { id, value }])
-    setTimeout(() => setItems(prev => prev.filter(i => i.id !== id)), 1200)
-  }, [trigger, value])
+  // Un solo número por golpe: `key={trigger}` monta uno nuevo en cada disparo y
+  // la animación lo desvanece. No hace falta guardar la lista en estado.
+  const items = trigger > 0 ? [{ id: trigger, value }] : []
 
   return (
     <div
