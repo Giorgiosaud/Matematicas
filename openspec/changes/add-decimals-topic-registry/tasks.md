@@ -7,7 +7,7 @@
 - [x] 1.5 Crear `src/lib/topics/index.ts` con el registro, y reescribir `generateExercise(round, topics)` para sortear tema y luego generador. Verificar que 1.1 pasa.
 - [x] 1.6 Reducir `ExerciseDisplay.tsx` a despachar al renderizador del tema del ejercicio.
 - [x] 1.7 Pasar `config.topics` desde `Game.tsx` y `SoloGame.tsx` al generador. Es el único cambio permitido en esos archivos.
-- [ ] 1.8 Verificación visual con la skill `run`: jugar una partida de fracciones y confirmar que se ve y se comporta igual que antes de la refactorización.
+- [x] 1.8 Verificación visual con la skill `run`: jugar una partida de fracciones y confirmar que se ve y se comporta igual que antes de la refactorización.
 
 ## 2. Tema de decimales
 
