@@ -17,12 +17,19 @@ function isScoreSubmission(value: unknown): value is ScoreSubmission {
   )
 }
 
+// Una partida encolada antes de que existieran los temas no trae categoría: se
+// asume 'fracciones', que es literalmente lo que era en ese momento. Descartarla
+// sería perder el puntaje de un niño por un detalle de formato.
+function withCategory(submission: ScoreSubmission): ScoreSubmission {
+  return submission.topicCategory ? submission : { ...submission, topicCategory: 'fracciones' }
+}
+
 export function loadPendingScores(): ScoreSubmission[] {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed.filter(isScoreSubmission) : []
+    return Array.isArray(parsed) ? parsed.filter(isScoreSubmission).map(withCategory) : []
   } catch {
     return []
   }

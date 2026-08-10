@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { fetchTop } from '../lib/leaderboardApi'
+import type { TopicCategory } from '../lib/topicSelection'
 import type { LeaderboardEntry } from '../lib/types'
+import './TopicSelector.css'
 
 type Status = 'loading' | 'ready' | 'error' | 'empty'
 
@@ -10,19 +12,29 @@ function formatTimer(seconds: number): string {
   return seconds === 0 ? '∞' : `${seconds}s`
 }
 
+const CATEGORIES: { id: TopicCategory; label: string }[] = [
+  { id: 'fracciones', label: 'FRACCIONES' },
+  { id: 'decimales', label: 'DECIMALES' },
+  { id: 'mixto', label: 'MIXTO' },
+]
+
 interface Props {
   questionLimit: number
+  category: TopicCategory
   limit?: number
 }
 
-export default function Leaderboard({ questionLimit, limit = 10 }: Props) {
+export default function Leaderboard({ questionLimit, category, limit = 10 }: Props) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [status, setStatus] = useState<Status>('loading')
+  // Se abre en la categoría de la sesión, pero el jugador puede curiosear las
+  // otras — media gracia de la tabla es ver contra quién se compite.
+  const [selected, setSelected] = useState<TopicCategory>(category)
 
   useEffect(() => {
     let cancelled = false
     setStatus('loading')
-    fetchTop(questionLimit, limit).then((result) => {
+    fetchTop(questionLimit, selected, limit).then((result) => {
       if (cancelled) return
       if (result === null) setStatus('error')
       else if (result.length === 0) setStatus('empty')
@@ -32,13 +44,30 @@ export default function Leaderboard({ questionLimit, limit = 10 }: Props) {
       }
     })
     return () => { cancelled = true }
-  }, [questionLimit, limit])
+  }, [questionLimit, selected, limit])
 
   return (
     <div className="w-full max-w-xs mx-auto">
       <p className="font-display text-base text-[#FFD700] tracking-widest mb-2 text-center">
         TABLA · PARTIDAS DE {questionLimit}
       </p>
+
+      <div className="temas temas--compacto" role="radiogroup" aria-label="Categoría de la tabla">
+        {CATEGORIES.map(({ id, label }) => (
+          <label key={id} className="tema-chip">
+            <input
+              className="tema-chip__input"
+              type="radio"
+              name="categoria-tabla"
+              value={id}
+              checked={selected === id}
+              onChange={() => setSelected(id)}
+            />
+            {label}
+          </label>
+        ))}
+      </div>
+
       {status === 'loading' && <p className="text-white/50 text-sm text-center">Cargando...</p>}
       {status === 'error' && <p className="text-white/50 text-sm text-center">No se pudo cargar la tabla.</p>}
       {status === 'empty' && <p className="text-white/50 text-sm text-center">¡Sé el primero en aparecer aquí!</p>}

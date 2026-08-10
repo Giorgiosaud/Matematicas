@@ -4,6 +4,8 @@ const DEFAULT_TOP_LIMIT = 10
 const MAX_TOP_LIMIT = 50
 const QUESTION_LIMITS = [10, 20, 30, 50]
 const TIMER_SECONDS_OPTIONS = [0, 10, 15, 20, 30, 60]
+const TOPIC_CATEGORIES = ['fracciones', 'decimales', 'mixto']
+const DEFAULT_TOPIC_CATEGORY = 'fracciones'
 
 interface SubmitBody {
   name?: unknown
@@ -11,6 +13,7 @@ interface SubmitBody {
   idempotencyKey?: unknown
   questionLimit?: unknown
   timerSeconds?: unknown
+  topicCategory?: unknown
   streak?: unknown
   accuracy?: unknown
   score?: unknown
@@ -63,6 +66,14 @@ function readTimerSeconds(value: unknown): number {
   )
 }
 
+// The topic category a session lands in is derived client-side from the topics
+// the player picked, and it's one of a closed set. Anything unknown — an older
+// client, a queued score from before topics existed — is treated as fractions
+// rather than rejected: losing a kid's score is worse than misfiling it.
+export function readTopicCategory(value: unknown): string {
+  return typeof value === 'string' && TOPIC_CATEGORIES.includes(value) ? value : DEFAULT_TOPIC_CATEGORY
+}
+
 // Looks up the current owner of `name`. Returns null if the name is unclaimed.
 async function findOwner(db: D1Database, name: string): Promise<string | null> {
   const row = await db.prepare(`SELECT owner_token AS ownerToken FROM players WHERE name = ?1`).bind(name).first<{ ownerToken: string | null }>()
@@ -108,6 +119,7 @@ async function handleSubmit(request: Request, db: D1Database): Promise<Response>
 
   const questionLimit = readQuestionLimit(body.questionLimit)
   const timerSeconds = readTimerSeconds(body.timerSeconds)
+  const topicCategory = readTopicCategory(body.topicCategory)
   const streak = clampInt(body.streak, 0, 100000)
   const total = clampInt(body.total, 0, 100000)
   const accuracy = total >= MIN_ATTEMPTS_FOR_ACCURACY ? clampInt(body.accuracy, 0, 100) : 0
@@ -124,9 +136,9 @@ async function handleSubmit(request: Request, db: D1Database): Promise<Response>
       .bind(name, ownerToken, updatedAt),
     db
       .prepare(
-        `INSERT INTO scores (name, question_limit, best_streak, best_accuracy, best_score, best_timer_seconds, total_sessions, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?7, 1, ?6)
-         ON CONFLICT(name, question_limit) DO UPDATE SET
+        `INSERT INTO scores (name, question_limit, topic_category, best_streak, best_accuracy, best_score, best_timer_seconds, total_sessions, updated_at)
+         VALUES (?1, ?2, ?8, ?3, ?4, ?5, ?7, 1, ?6)
+         ON CONFLICT(name, question_limit, topic_category) DO UPDATE SET
            best_streak = MAX(best_streak, ?3),
            best_accuracy = MAX(best_accuracy, ?4),
            best_score = MAX(best_score, ?5),
@@ -134,7 +146,7 @@ async function handleSubmit(request: Request, db: D1Database): Promise<Response>
            total_sessions = total_sessions + 1,
            updated_at = ?6`
       )
-      .bind(name, questionLimit, streak, accuracy, score, updatedAt, timerSeconds),
+      .bind(name, questionLimit, streak, accuracy, score, updatedAt, timerSeconds, topicCategory),
     db
       .prepare(`INSERT INTO processed_submissions (idempotency_key, created_at) VALUES (?1, ?2)`)
       .bind(idempotencyKey, updatedAt),
@@ -147,16 +159,17 @@ async function handleTop(request: Request, db: D1Database): Promise<Response> {
   const url = new URL(request.url)
   const limit = clampInt(url.searchParams.get('limit') ?? DEFAULT_TOP_LIMIT, 1, MAX_TOP_LIMIT)
   const questionLimit = readQuestionLimit(url.searchParams.get('questionLimit'))
+  const topicCategory = readTopicCategory(url.searchParams.get('topicCategory'))
 
   const { results } = await db
     .prepare(
       `SELECT name, best_streak AS bestStreak, best_accuracy AS bestAccuracy, best_score AS bestScore, best_timer_seconds AS bestTimerSeconds, total_sessions AS totalSessions
        FROM scores
-       WHERE question_limit = ?1
+       WHERE question_limit = ?1 AND topic_category = ?3
        ORDER BY best_score DESC, best_streak DESC
        LIMIT ?2`
     )
-    .bind(questionLimit, limit)
+    .bind(questionLimit, limit, topicCategory)
     .all()
 
   return jsonResponse({ entries: results ?? [] })

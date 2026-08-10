@@ -6,6 +6,7 @@ import { generateExercise, validateAnswer } from '../lib/topics'
 import { getRandomJoke } from '../lib/jokes'
 import { loadSoloHighScore, saveSoloHighScore } from '../lib/soloStorage'
 import { submitOrQueueScore } from '../lib/scoreSync'
+import { topicCategory } from '../lib/topicSelection'
 import Leaderboard from './Leaderboard'
 import Timer from './Timer'
 import { useSoundFX } from '../hooks/useSoundFX'
@@ -206,8 +207,8 @@ export default function SoloGame({ config, onExit }: Props) {
     const updated = saveSoloHighScore(record, { streak: bestStreak, correct: correctCount, total: totalCount })
     setRecord(updated)
     // Fire-and-forget — the leaderboard is a bonus, not a blocker for exiting.
-    submitOrQueueScore({ name: config.player1Name || 'Jugador', questionLimit: config.questionLimit, timerSeconds: config.timerSeconds, streak: bestStreak, accuracy, score: points, total: totalCount, idempotencyKey: sessionIdRef.current })
-  }, [showSummary, record, bestStreak, correctCount, totalCount, accuracy, points, config.player1Name, config.questionLimit, config.timerSeconds])
+    submitOrQueueScore({ name: config.player1Name || 'Jugador', questionLimit: config.questionLimit, topicCategory: topicCategory(config.topics), timerSeconds: config.timerSeconds, streak: bestStreak, accuracy, score: points, total: totalCount, idempotencyKey: sessionIdRef.current })
+  }, [showSummary, record, bestStreak, correctCount, totalCount, accuracy, points, config.player1Name, config.questionLimit, config.timerSeconds, config.topics])
 
   const persistAndExit = useCallback(() => {
     if (jokeTimer.current) clearTimeout(jokeTimer.current)
@@ -451,7 +452,7 @@ export default function SoloGame({ config, onExit }: Props) {
             </div>
 
             <div className="w-full max-w-xs">
-              <Leaderboard questionLimit={config.questionLimit} />
+              <Leaderboard questionLimit={config.questionLimit} category={topicCategory(config.topics)} />
             </div>
 
             <div className="flex flex-col gap-3 w-full max-w-xs mt-2">

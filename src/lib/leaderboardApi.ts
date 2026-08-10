@@ -1,9 +1,13 @@
 import type { LeaderboardEntry } from './types'
 import { getDeviceId } from './deviceId'
+import type { TopicCategory } from './topicSelection'
 
 export interface ScoreSubmission {
   name: string
   questionLimit: number
+  // Categoría en la que compite la partida: 'fracciones', 'decimales' o
+  // 'mixto'. Se deriva de los temas elegidos (ver topicSelection.ts).
+  topicCategory: TopicCategory
   timerSeconds: number
   streak: number
   accuracy: number
@@ -50,9 +54,9 @@ export async function submitScore(submission: ScoreSubmission): Promise<boolean>
   }
 }
 
-export async function fetchTop(questionLimit: number, limit = 10): Promise<LeaderboardEntry[] | null> {
+export async function fetchTop(questionLimit: number, topicCategory: TopicCategory, limit = 10): Promise<LeaderboardEntry[] | null> {
   try {
-    const params = new URLSearchParams({ questionLimit: String(questionLimit), limit: String(limit) })
+    const params = new URLSearchParams({ questionLimit: String(questionLimit), topicCategory, limit: String(limit) })
     const res = await fetch(`/api/leaderboard/top?${params.toString()}`)
     if (!res.ok) return null
     const data = await res.json()

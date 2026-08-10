@@ -226,7 +226,7 @@ describe('SoloGame', () => {
     fireEvent.click(screen.getByText('SALIR'))
 
     // timerSeconds: 30 → timer multiplier ×1.3, streak 1 → no streak bonus: round(10 × 1.3) = 13
-    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, timerSeconds: 30, streak: 1, accuracy: 100, score: 13, total: 1, idempotencyKey: expect.any(String) })
+    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, topicCategory: 'fracciones', timerSeconds: 30, streak: 1, accuracy: 100, score: 13, total: 1, idempotencyKey: expect.any(String) })
   })
 
   it('rewards harder (shorter) timer settings with a higher score multiplier', () => {
@@ -239,7 +239,7 @@ describe('SoloGame', () => {
     fireEvent.click(screen.getByText('SALIR'))
 
     // timerSeconds: 10 → timer multiplier ×1.5, streak 1 → no streak bonus: round(10 × 1.5) = 15
-    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, timerSeconds: 10, streak: 1, accuracy: 100, score: 15, total: 1, idempotencyKey: expect.any(String) })
+    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, topicCategory: 'fracciones', timerSeconds: 10, streak: 1, accuracy: 100, score: 15, total: 1, idempotencyKey: expect.any(String) })
   })
 
   it('shows the live score and streak multiplier badge in the header', () => {

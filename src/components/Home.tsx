@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GameConfig, GameMode, TopicId } from '../lib/types'
 import { checkName } from '../lib/leaderboardApi'
-import { loadTopics, saveTopics } from '../lib/topicSelection'
+import { loadTopics, saveTopics, topicCategory } from '../lib/topicSelection'
 import TopicSelector from './TopicSelector'
 import Leaderboard from './Leaderboard'
 
@@ -258,7 +258,7 @@ export default function Home({ onStart }: Props) {
               className="text-center max-w-sm w-full px-6 py-6 rounded-3xl card-3d"
               style={{ background: 'var(--surface)' }}
             >
-              <Leaderboard questionLimit={questionLimit} />
+              <Leaderboard questionLimit={questionLimit} category={topicCategory(topics)} />
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowLeaderboard(false)}

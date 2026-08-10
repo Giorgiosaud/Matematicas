@@ -97,3 +97,16 @@
   font-size: 0.75rem;
   text-align: center;
 }
+
+/* Variante compacta para la cabecera de la tabla de posiciones, donde los
+   chips acompañan y no protagonizan. */
+.temas--compacto {
+  margin-bottom: 0.75rem;
+}
+
+.temas--compacto .tema-chip {
+  --chip-padding: 0.25rem 0.625rem;
+  --chip-shadow: 2px 2px 0 #000;
+  font-size: 0.875rem;
+  border-width: 2px;
+}

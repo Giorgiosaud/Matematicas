@@ -30,13 +30,13 @@
 
 ## 4. Leaderboard por categoría de tema
 
-- [ ] 4.1 Escribir la migración `migrations/0007_add_topic_category.sql`: crear la tabla nueva con la llave `(name, question_limit, topic_category)`, copiar las filas existentes como `fracciones`, borrar la vieja, renombrar.
-- [ ] 4.2 Aplicarla en local sobre una copia con datos y verificar el conteo de filas antes y después. **No continuar si no coincide.**
-- [ ] 4.3 Escribir las pruebas del Worker para la categoría: valor conocido se respeta, valor desconocido cae a `fracciones`, la consulta segmenta por categoría.
-- [ ] 4.4 Implementar la validación y las consultas en `worker/index.ts`.
-- [ ] 4.5 Escribir las pruebas de `leaderboardApi` y `scoreQueue`: la submission lleva `topicCategory`, y una entrada encolada sin ese campo se reintenta como `fracciones`.
-- [ ] 4.6 Implementar el envío de la categoría, derivándola de los temas de la sesión.
-- [ ] 4.7 Agregar el selector de categoría a `Leaderboard.tsx`, siguiendo BPL DS y sin Tailwind nuevo.
+- [x] 4.1 Escribir la migración `migrations/0007_add_topic_category.sql`: crear la tabla nueva con la llave `(name, question_limit, topic_category)`, copiar las filas existentes como `fracciones`, borrar la vieja, renombrar.
+- [x] 4.2 Aplicarla en local sobre una copia con datos y verificar el conteo de filas antes y después. **No continuar si no coincide.**
+- [x] 4.3 Escribir las pruebas del Worker para la categoría: valor conocido se respeta, valor desconocido cae a `fracciones`, la consulta segmenta por categoría.
+- [x] 4.4 Implementar la validación y las consultas en `worker/index.ts`.
+- [x] 4.5 Escribir las pruebas de `leaderboardApi` y `scoreQueue`: la submission lleva `topicCategory`, y una entrada encolada sin ese campo se reintenta como `fracciones`.
+- [x] 4.6 Implementar el envío de la categoría, derivándola de los temas de la sesión.
+- [x] 4.7 Agregar el selector de categoría a `Leaderboard.tsx`, siguiendo BPL DS y sin Tailwind nuevo.
 - [ ] 4.8 Verificación visual con `run`: terminar una partida mixta y confirmar que aparece en la tabla `mixto` y no en las otras.
 
 ## 5. Cierre
