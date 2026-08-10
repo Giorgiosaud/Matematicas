@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  setup:
+    uses: BePartnerLabs/centralized-workflows/.github/workflows/setup.yml@main
+
+  lint:
+    needs: setup
+    uses: BePartnerLabs/centralized-workflows/.github/workflows/lint.yml@main
+    with:
+      cache-key: ${{ needs.setup.outputs.cache-key }}
+      store-path: ${{ needs.setup.outputs.store-path }}
+
+  test:
+    needs: setup
+    uses: BePartnerLabs/centralized-workflows/.github/workflows/test.yml@main
+    with:
+      cache-key: ${{ needs.setup.outputs.cache-key }}
+      store-path: ${{ needs.setup.outputs.store-path }}
+      # Las pruebas viven junto al código (foo.ts + foo.test.ts), no en tests/unit,
+      # que es lo que asume el valor por defecto del workflow centralizado.
+      test-command: pnpm vitest run

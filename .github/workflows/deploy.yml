@@ -1,0 +1,69 @@
+name: Deploy — Cloudflare
+
+# Las migraciones se aplican SOLO desde aquí. Nadie corre SQL a mano contra
+# producción: así fue como el registro de migraciones acabó desincronizado con
+# el esquema real (0001–0004 aplicadas a mano, sin anotar en `d1_migrations`).
+#
+# El orden importa y es el del plan de migración del diseño: primero la base,
+# después el Worker. Al revés, el Worker nuevo consultaría columnas que todavía
+# no existen.
+#
+# ⚠️ ANTES DE LA PRIMERA EJECUCIÓN: comprobar que
+# `wrangler d1 migrations list fracciones-leaderboard --remote` NO lista la
+# 0003, que empieza con DROP TABLE IF EXISTS players. Si aparece, el registro
+# sigue desincronizado y este workflow borraría los datos de producción.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: Migraciones D1 (producción)
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Deja constancia en el log de qué se va a aplicar antes de aplicarlo:
+      # si algo sale mal, el log dice exactamente qué migraciones corrieron.
+      - name: Migraciones pendientes
+        run: pnpm wrangler d1 migrations list fracciones-leaderboard --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Aplicar migraciones
+        run: pnpm wrangler d1 migrations apply fracciones-leaderboard --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy:
+    name: Desplegar Worker
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
