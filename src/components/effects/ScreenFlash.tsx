@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
@@ -8,18 +7,11 @@ interface Props {
 }
 
 export default function ScreenFlash({ color, trigger, opacity = 0.45 }: Props) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (trigger === 0) return
-    setVisible(true)
-    const id = setTimeout(() => setVisible(false), 350)
-    return () => clearTimeout(id)
-  }, [trigger])
-
+  // Cada disparo es un elemento nuevo (`key={trigger}`) que se anima de opaco a
+  // transparente. No hace falta estado: el destello *es* la animación.
   return (
     <AnimatePresence>
-      {visible && (
+      {trigger > 0 && (
         <motion.div
           key={trigger}
           initial={{ opacity }}

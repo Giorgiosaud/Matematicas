@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { GameConfig, PlayerKey, Scores } from '../lib/types'
-import { recordWin, clearWins, type WinRecord } from '../lib/wins'
+import { loadWins, clearWins, type WinRecord } from '../lib/wins'
 
 interface Props {
   scores: Scores
@@ -10,8 +10,9 @@ interface Props {
   onReplay: () => void
 }
 
-function useConfetti(canvas: HTMLCanvasElement | null) {
+function useConfetti(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
+    const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
     canvas.width = window.innerWidth
@@ -40,7 +41,7 @@ function useConfetti(canvas: HTMLCanvasElement | null) {
     }
     draw()
     return () => cancelAnimationFrame(raf)
-  }, [canvas])
+  }, [canvasRef])
 }
 
 function WinBoard({ records, onClear }: { records: WinRecord[]; onClear: () => void }) {
@@ -80,17 +81,14 @@ function WinBoard({ records, onClear }: { records: WinRecord[]; onClear: () => v
 
 export default function FinalScoreboard({ scores, config, winner, onReplay }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  useConfetti(canvasRef.current)
+  useConfetti(canvasRef)
 
   const winnerName = winner === 'q' ? config.player1Name : config.player2Name
   const winnerColor = winner === 'q' ? '#1D9BF0' : '#FF3B3B'
 
-  const [records, setRecords] = useState<WinRecord[]>([])
-
-  useEffect(() => {
-    const updated = recordWin(winnerName)
-    setRecords(updated)
-  }, [winnerName])
+  // La victoria la registra App al terminar la partida: es un efecto del juego,
+  // no del render de esta pantalla. Aquí solo se lee lo ya guardado.
+  const [records, setRecords] = useState<WinRecord[]>(loadWins)
 
   const handleClear = () => {
     clearWins()

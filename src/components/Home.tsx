@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import type { GameConfig, GameMode } from '../lib/types'
+import type { GameConfig, GameMode, TopicId } from '../lib/types'
 import { checkName } from '../lib/leaderboardApi'
+import { loadTopics, saveTopics, topicCategory } from '../lib/topicSelection'
+import TopicSelector from './TopicSelector'
 import Leaderboard from './Leaderboard'
 
 interface Props {
@@ -43,9 +45,12 @@ export default function Home({ onStart }: Props) {
   const [nameError, setNameError] = useState<string | null>(null)
   const [checkingName, setCheckingName] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [topics, setTopics] = useState<TopicId[]>(loadTopics)
 
   const handleStart = async () => {
     setNameError(null)
+
+    if (topics.length === 0) return
 
     if (mode === 'solo') {
       const name = player1Name.trim()
@@ -61,14 +66,16 @@ export default function Home({ onStart }: Props) {
         return
       }
       saveNames(name, player2Name.trim())
-      onStart({ mode, player1Name: name, player2Name: player2Name.trim() || 'Jugador 2', pointsToWin, timerSeconds, questionLimit })
+      saveTopics(topics)
+      onStart({ mode, player1Name: name, player2Name: player2Name.trim() || 'Jugador 2', pointsToWin, timerSeconds, questionLimit, topics })
       return
     }
 
     const p1 = player1Name.trim() || 'Jugador 1'
     const p2 = player2Name.trim() || 'Jugador 2'
     saveNames(player1Name.trim(), player2Name.trim())
-    onStart({ mode, player1Name: p1, player2Name: p2, pointsToWin, timerSeconds, questionLimit })
+    saveTopics(topics)
+    onStart({ mode, player1Name: p1, player2Name: p2, pointsToWin, timerSeconds, questionLimit, topics })
   }
 
   return (
@@ -251,7 +258,7 @@ export default function Home({ onStart }: Props) {
               className="text-center max-w-sm w-full px-6 py-6 rounded-3xl card-3d"
               style={{ background: 'var(--surface)' }}
             >
-              <Leaderboard questionLimit={questionLimit} />
+              <Leaderboard questionLimit={questionLimit} category={topicCategory(topics)} />
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowLeaderboard(false)}
@@ -298,6 +305,23 @@ export default function Home({ onStart }: Props) {
         )}
       </motion.div>
 
+      {/* Topic selector — decides what the session practises and which
+          leaderboard category the score lands in */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="home-selector flex flex-col items-center gap-2 sm:gap-3"
+      >
+        <span className="home-selector-label font-display text-lg sm:text-xl md:text-2xl text-white tracking-widest drop-shadow-[2px_2px_0_#000]">
+          TEMAS
+        </span>
+        <TopicSelector selected={topics} onChange={setTopics} />
+        {topics.length === 0 && (
+          <p className="temas-aviso">Elige al menos un tema para jugar</p>
+        )}
+      </motion.div>
+
       {/* Start */}
       <motion.button
         initial={{ opacity: 0, scale: 0.8 }}
@@ -306,7 +330,7 @@ export default function Home({ onStart }: Props) {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.96 }}
         onClick={handleStart}
-        disabled={checkingName}
+        disabled={checkingName || topics.length === 0}
         className="home-start bg-[#FFD700] text-black font-display text-3xl sm:text-4xl md:text-5xl px-8 sm:px-12 md:px-16 py-3 sm:py-4 rounded-2xl tracking-widest btn-3d disabled:opacity-60"
       >
         {checkingName ? '...' : '¡JUGAR!'}

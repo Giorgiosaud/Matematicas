@@ -1,3 +1,9 @@
+import type { TopicId } from './topics/types'
+
+// El ejercicio y el contrato de tema viven en `./topics/types`; se reexportan
+// aquí para que las pantallas sigan importando sus tipos desde un solo lugar.
+export type { Exercise, TopicId } from './topics/types'
+
 export type Screen = 'home' | 'game' | 'soloGame' | 'scoreboard'
 
 export type PlayerKey = 'q' | 'p'
@@ -11,6 +17,7 @@ export interface GameConfig {
   pointsToWin: number
   timerSeconds: number
   questionLimit: number
+  topics: TopicId[]
 }
 
 export interface LeaderboardEntry {
@@ -29,24 +36,9 @@ export interface SoloHighScore {
   updatedAt: string      // ISO date
 }
 
-export type ExerciseType = 'compare' | 'simplify' | 'amplify' | 'mixed' | 'add' | 'subtract'
-
 export interface FractionValue {
   numerator: number
   denominator: number
-}
-
-export type ExerciseAnswer = string | number
-
-export interface Exercise {
-  type: ExerciseType
-  fractionA: FractionValue
-  fractionB?: FractionValue
-  targetDenominator?: number
-  wholePartA?: number
-  answer: ExerciseAnswer
-  displayAnswer: string
-  options: string[]  // shuffled choices including the correct answer
 }
 
 export interface RoundResult {

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
-import type { Exercise, GameConfig, PlayerKey, Scores } from '../lib/types'
-import { generateExercise, validateAnswer } from '../lib/exercises'
-import { renderExercise, exerciseLabel, OptionGrid, buildHint } from './exercise/ExerciseDisplay'
+import type { Exercise, GameConfig, PlayerKey, Scores, TopicId } from '../lib/types'
+import { generateExercise, validateAnswer } from '../lib/topics'
+import { ExerciseStatement, OptionGrid, ExerciseVisual } from './exercise/ExerciseDisplay'
+import { exerciseLabel, buildHint } from './exercise/exerciseText'
 import { getRandomJoke } from '../lib/jokes'
-import FractionVisualizer from './FractionVisualizer'
 import Timer from './Timer'
 import HealthBar from './HealthBar'
 import { useSoundFX } from '../hooks/useSoundFX'
@@ -20,6 +20,8 @@ interface Props {
 }
 
 type Phase = 'waiting' | 'locked'
+
+const newExercise = (r: number, topics: TopicId[]) => generateExercise(Math.ceil(r / 3), topics)
 
 const MAX_HP = 100
 const DAMAGE = 25
@@ -37,7 +39,7 @@ export default function Game({ config, onGameEnd }: Props) {
   const [hp, setHp] = useState<Record<PlayerKey, number>>({ q: MAX_HP, p: MAX_HP })
   const [streak, setStreak] = useState<Record<PlayerKey, number>>({ q: 0, p: 0 })
   const [round, setRound] = useState(1)
-  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1))
+  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1, config.topics))
   const [phase, setPhase] = useState<Phase>('waiting')
   const [lockedPlayer, setLockedPlayer] = useState<PlayerKey | null>(null)
   const [secondChance, setSecondChance] = useState(false)
@@ -55,6 +57,9 @@ export default function Game({ config, onGameEnd }: Props) {
 
   const sfx = useSoundFX()
   const bgm = useBGM()
+  // Se extraen para poder declararlas como dependencias del efecto sin arrastrar
+  // el objeto entero, que cambia en cada render.
+  const { stop: stopBgm } = bgm
 
   const [flash, setFlash] = useState<{ color: string; trigger: number }>({ color: '#ffffff', trigger: 0 })
   const fireFlash = useCallback((color: string) => setFlash(f => ({ color, trigger: f.trigger + 1 })), [])
@@ -81,7 +86,6 @@ export default function Game({ config, onGameEnd }: Props) {
 
   const other = (p: PlayerKey): PlayerKey => p === 'q' ? 'p' : 'q'
 
-  const newExercise = (r: number) => generateExercise(Math.ceil(r / 3))
 
   const clearRoundState = () => {
     setSelectedOption(null)
@@ -98,30 +102,30 @@ export default function Game({ config, onGameEnd }: Props) {
       setJoke(getRandomJoke())
       jokeTimer.current = setTimeout(() => {
         setJoke(null)
-        setExercise(newExercise(r))
+        setExercise(newExercise(r, config.topics))
         setPhase('waiting')
         setLockedPlayer(null)
         setSecondChance(false)
         clearRoundState()
       }, 15000)
     } else {
-      setExercise(newExercise(r))
+      setExercise(newExercise(r, config.topics))
       setPhase('waiting')
       setLockedPlayer(null)
       setSecondChance(false)
       clearRoundState()
     }
-  }, [])
+  }, [config.topics])
 
   const resetRound = useCallback((r: number) => {
     if (jokeTimer.current) clearTimeout(jokeTimer.current)
     setJoke(null)
-    setExercise(newExercise(r))
+    setExercise(newExercise(r, config.topics))
     setPhase('waiting')
     setLockedPlayer(null)
     setSecondChance(false)
     clearRoundState()
-  }, [])
+  }, [config.topics])
 
   const startComeback = useCallback((loser: PlayerKey) => {
     setComebackPlayer(loser)
@@ -335,13 +339,13 @@ export default function Game({ config, onGameEnd }: Props) {
   // state update, and the next buzzPlayer() would start a second loop on
   // top of oscillators the previous loop had already scheduled.
   useEffect(() => {
-    return () => { bgm.stop() }
-  }, [bgm.stop])
+    return () => { stopBgm() }
+  }, [stopBgm])
 
   // Show hint after 8s when a player is locked and hasn't answered
   useEffect(() => {
     if (phase !== 'locked' || feedback || selectedOption) return
-    setShowHint(false)
+    // Ocultarla ya lo hace clearRoundState al empezar la ronda.
     const id = setTimeout(() => setShowHint(true), 8000)
     return () => clearTimeout(id)
   }, [phase, timerKey, feedback, selectedOption])
@@ -350,12 +354,12 @@ export default function Game({ config, onGameEnd }: Props) {
     if (jokeTimer.current) clearTimeout(jokeTimer.current)
     const r = jokeRoundRef.current
     setJoke(null)
-    setExercise(newExercise(r))
+    setExercise(newExercise(r, config.topics))
     setPhase('waiting')
     setLockedPlayer(null)
     setSecondChance(false)
     clearRoundState()
-  }, [])
+  }, [config.topics])
 
   const p1 = config.player1Name
   const p2 = config.player2Name
@@ -514,10 +518,10 @@ export default function Game({ config, onGameEnd }: Props) {
               className="rounded-3xl px-5 sm:px-7 md:px-10 py-4 sm:py-5 md:py-6 short-screen-card"
               style={{ background: 'var(--surface)', border: '3px solid #000', boxShadow: '6px 6px 0 #000' }}
             >
-              {renderExercise(exercise, exercise.type === 'compare' ? selectedOption : null)}
+              <ExerciseStatement exercise={exercise} selectedOption={exercise.type === 'compare' || exercise.type === 'comparar' ? selectedOption : null} />
             </div>
             <div className="short-screen-hide">
-              <FractionVisualizer fraction={exercise.fractionA} color="#FFD700" />
+              <ExerciseVisual exercise={exercise} color="#FFD700" />
             </div>
 
             {/* Options */}

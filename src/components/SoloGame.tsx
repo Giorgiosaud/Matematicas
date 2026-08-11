@@ -1,18 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
-import type { Exercise, GameConfig } from '../lib/types'
-import { generateExercise, validateAnswer } from '../lib/exercises'
+import type { Exercise, GameConfig, TopicId } from '../lib/types'
+import { generateExercise, validateAnswer } from '../lib/topics'
 import { getRandomJoke } from '../lib/jokes'
 import { loadSoloHighScore, saveSoloHighScore } from '../lib/soloStorage'
 import { submitOrQueueScore } from '../lib/scoreSync'
-import FractionVisualizer from './FractionVisualizer'
+import { topicCategory } from '../lib/topicSelection'
 import Leaderboard from './Leaderboard'
 import Timer from './Timer'
 import { useSoundFX } from '../hooks/useSoundFX'
 import { useBGM } from '../hooks/useBGM'
 import ScreenFlash from './effects/ScreenFlash'
-import { renderExercise, exerciseLabel, OptionGrid, buildHint } from './exercise/ExerciseDisplay'
+import { ExerciseStatement, OptionGrid, ExerciseVisual } from './exercise/ExerciseDisplay'
+import { exerciseLabel, buildHint } from './exercise/exerciseText'
 
 interface Props {
   config: GameConfig
@@ -21,7 +22,7 @@ interface Props {
 
 type Phase = 'answering' | 'feedback'
 
-const newExercise = (r: number) => generateExercise(Math.ceil(r / 3))
+const newExercise = (r: number, topics: TopicId[]) => generateExercise(Math.ceil(r / 3), topics)
 
 const BASE_POINTS = 10
 
@@ -42,7 +43,7 @@ function calcPoints(streakAfterAnswer: number, timerSeconds: number) {
 
 export default function SoloGame({ config, onExit }: Props) {
   const [round, setRound] = useState(1)
-  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1))
+  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1, config.topics))
   const [phase, setPhase] = useState<Phase>('answering')
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [revealCorrect, setRevealCorrect] = useState(false)
@@ -66,6 +67,9 @@ export default function SoloGame({ config, onExit }: Props) {
 
   const sfx = useSoundFX()
   const bgm = useBGM()
+  // Se extraen para poder declararlas como dependencias del efecto sin arrastrar
+  // el objeto entero, que cambia en cada render.
+  const { start: startBgm, stop: stopBgm } = bgm
 
   const [flash, setFlash] = useState<{ color: string; trigger: number }>({ color: '#ffffff', trigger: 0 })
   const fireFlash = useCallback((color: string) => setFlash(f => ({ color, trigger: f.trigger + 1 })), [])
@@ -83,10 +87,10 @@ export default function SoloGame({ config, onExit }: Props) {
   }
 
   const advanceRound = useCallback((r: number) => {
-    setExercise(newExercise(r))
+    setExercise(newExercise(r, config.topics))
     setPhase('answering')
     clearRoundState()
-  }, [])
+  }, [config.topics])
 
   const showJokeThenAdvance = useCallback((r: number) => {
     if (r % 3 === 0) {
@@ -166,14 +170,14 @@ export default function SoloGame({ config, onExit }: Props) {
   // reference on every render) so the loop runs once and isn't restarted on
   // top of itself each time an answer updates state — that caused overlap.
   useEffect(() => {
-    bgm.start()
-    return () => { bgm.stop() }
-  }, [bgm.start, bgm.stop])
+    startBgm()
+    return () => { stopBgm() }
+  }, [startBgm, stopBgm])
 
   // Show hint after 8s without an answer
   useEffect(() => {
     if (phase !== 'answering' || feedback || selectedOption) return
-    setShowHint(false)
+    // Ocultarla ya lo hace clearRoundState al empezar la ronda.
     const id = setTimeout(() => setShowHint(true), 8000)
     return () => clearTimeout(id)
   }, [phase, timerKey, feedback, selectedOption])
@@ -207,8 +211,8 @@ export default function SoloGame({ config, onExit }: Props) {
     const updated = saveSoloHighScore(record, { streak: bestStreak, correct: correctCount, total: totalCount })
     setRecord(updated)
     // Fire-and-forget — the leaderboard is a bonus, not a blocker for exiting.
-    submitOrQueueScore({ name: config.player1Name || 'Jugador', questionLimit: config.questionLimit, timerSeconds: config.timerSeconds, streak: bestStreak, accuracy, score: points, total: totalCount, idempotencyKey: sessionIdRef.current })
-  }, [showSummary, record, bestStreak, correctCount, totalCount, accuracy, points, config.player1Name, config.questionLimit, config.timerSeconds])
+    submitOrQueueScore({ name: config.player1Name || 'Jugador', questionLimit: config.questionLimit, topicCategory: topicCategory(config.topics), timerSeconds: config.timerSeconds, streak: bestStreak, accuracy, score: points, total: totalCount, idempotencyKey: sessionIdRef.current })
+  }, [showSummary, record, bestStreak, correctCount, totalCount, accuracy, points, config.player1Name, config.questionLimit, config.timerSeconds, config.topics])
 
   const persistAndExit = useCallback(() => {
     if (jokeTimer.current) clearTimeout(jokeTimer.current)
@@ -226,11 +230,11 @@ export default function SoloGame({ config, onExit }: Props) {
     setStreak(0)
     setBestStreak(0)
     setNewRecord(false)
-    setExercise(newExercise(1))
+    setExercise(newExercise(1, config.topics))
     setPhase('answering')
     clearRoundState()
     setShowSummary(false)
-  }, [])
+  }, [config.topics])
 
   return (
     <div className="min-h-screen overflow-y-auto text-white flex flex-col" style={{ background: 'var(--bg)' }}>
@@ -314,9 +318,9 @@ export default function SoloGame({ config, onExit }: Props) {
               className="rounded-3xl px-5 sm:px-7 md:px-10 py-4 sm:py-5 md:py-6"
               style={{ background: 'var(--surface)', border: '3px solid #000', boxShadow: '6px 6px 0 #000' }}
             >
-              {renderExercise(exercise, exercise.type === 'compare' ? selectedOption : null)}
+              <ExerciseStatement exercise={exercise} selectedOption={exercise.type === 'compare' || exercise.type === 'comparar' ? selectedOption : null} />
             </div>
-            <FractionVisualizer fraction={exercise.fractionA} color="#FFD700" />
+            <ExerciseVisual exercise={exercise} color="#FFD700" />
 
             <div className="flex flex-col items-center gap-1.5 w-full">
               <OptionGrid
@@ -452,7 +456,7 @@ export default function SoloGame({ config, onExit }: Props) {
             </div>
 
             <div className="w-full max-w-xs">
-              <Leaderboard questionLimit={config.questionLimit} />
+              <Leaderboard questionLimit={config.questionLimit} category={topicCategory(config.topics)} />
             </div>
 
             <div className="flex flex-col gap-3 w-full max-w-xs mt-2">

@@ -18,7 +18,7 @@ beforeEach(() => {
 describe('Leaderboard', () => {
   it('renders the ranked entries once loaded', async () => {
     vi.mocked(fetchTop).mockResolvedValue(ENTRIES)
-    render(<Leaderboard questionLimit={20} />)
+    render(<Leaderboard questionLimit={20} category="fracciones" />)
 
     expect(await screen.findByText('Ana')).toBeInTheDocument()
     expect(screen.getByText('Beto')).toBeInTheDocument()
@@ -29,22 +29,22 @@ describe('Leaderboard', () => {
 
   it('shows an empty state when there are no entries yet', async () => {
     vi.mocked(fetchTop).mockResolvedValue([])
-    render(<Leaderboard questionLimit={20} />)
+    render(<Leaderboard questionLimit={20} category="fracciones" />)
 
     expect(await screen.findByText('¡Sé el primero en aparecer aquí!')).toBeInTheDocument()
   })
 
   it('shows an error state when the leaderboard cannot be loaded', async () => {
     vi.mocked(fetchTop).mockResolvedValue(null)
-    render(<Leaderboard questionLimit={20} />)
+    render(<Leaderboard questionLimit={20} category="fracciones" />)
 
     await waitFor(() => expect(screen.getByText('No se pudo cargar la tabla.')).toBeInTheDocument())
   })
 
   it('requests the given limit', () => {
     vi.mocked(fetchTop).mockResolvedValue([])
-    render(<Leaderboard questionLimit={20} limit={5} />)
+    render(<Leaderboard questionLimit={20} category="fracciones" limit={5} />)
 
-    expect(fetchTop).toHaveBeenCalledWith(20, 5)
+    expect(fetchTop).toHaveBeenCalledWith(20, 'fracciones', 5)
   })
 })

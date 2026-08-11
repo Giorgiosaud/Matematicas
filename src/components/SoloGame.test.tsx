@@ -60,14 +60,16 @@ vi.mock('../lib/scoreSync', () => ({ submitOrQueueScore: (...args: unknown[]) =>
 vi.mock('./Leaderboard', () => ({ default: () => <div>TOP JUGADORES</div> }))
 
 const makeExercise = (): Exercise => ({
+  topic: 'fracciones',
   type: 'mixed',
-  fractionA: { numerator: 1, denominator: 2 },
   answer: '1/2',
   displayAnswer: '1/2',
   options: ['1/2', '1/3', '1/4'],
+  payload: { fractionA: { numerator: 1, denominator: 2 } },
 })
 
-vi.mock('../lib/exercises', () => ({
+vi.mock('../lib/topics', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../lib/topics')>()),
   generateExercise: () => makeExercise(),
   validateAnswer: (exercise: Exercise, userInput: string) => userInput === String(exercise.answer),
 }))
@@ -79,6 +81,7 @@ const config: GameConfig = {
   pointsToWin: 5,
   timerSeconds: 30,
   questionLimit: 20,
+  topics: ['fracciones'],
 }
 
 const HIGHSCORE_KEY = 'fracciones:soloHighScore'
@@ -223,7 +226,7 @@ describe('SoloGame', () => {
     fireEvent.click(screen.getByText('SALIR'))
 
     // timerSeconds: 30 → timer multiplier ×1.3, streak 1 → no streak bonus: round(10 × 1.3) = 13
-    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, timerSeconds: 30, streak: 1, accuracy: 100, score: 13, total: 1, idempotencyKey: expect.any(String) })
+    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, topicCategory: 'fracciones', timerSeconds: 30, streak: 1, accuracy: 100, score: 13, total: 1, idempotencyKey: expect.any(String) })
   })
 
   it('rewards harder (shorter) timer settings with a higher score multiplier', () => {
@@ -236,7 +239,7 @@ describe('SoloGame', () => {
     fireEvent.click(screen.getByText('SALIR'))
 
     // timerSeconds: 10 → timer multiplier ×1.5, streak 1 → no streak bonus: round(10 × 1.5) = 15
-    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, timerSeconds: 10, streak: 1, accuracy: 100, score: 15, total: 1, idempotencyKey: expect.any(String) })
+    expect(submitOrQueueScore).toHaveBeenCalledWith({ name: 'Jugador', questionLimit: 20, topicCategory: 'fracciones', timerSeconds: 10, streak: 1, accuracy: 100, score: 15, total: 1, idempotencyKey: expect.any(String) })
   })
 
   it('shows the live score and streak multiplier badge in the header', () => {

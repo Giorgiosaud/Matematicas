@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { loadPendingScores, enqueuePendingScore, removePendingScore } from './scoreQueue'
 
 const submission = (idempotencyKey: string) => ({
-  name: 'Ana', questionLimit: 20, timerSeconds: 20, streak: 5, accuracy: 80, score: 140, total: 12, idempotencyKey,
+  name: 'Ana', questionLimit: 20, topicCategory: 'fracciones' as const, timerSeconds: 20, streak: 5, accuracy: 80, score: 140, total: 12, idempotencyKey,
 })
 
 beforeEach(() => {
@@ -65,5 +65,14 @@ describe('removePendingScore', () => {
     enqueuePendingScore(submission('a'))
     removePendingScore('missing')
     expect(loadPendingScores()).toEqual([submission('a')])
+  })
+})
+
+describe('entradas encoladas antes de que existieran los temas', () => {
+  it('se reintentan como fracciones en vez de descartarse', () => {
+    const legacy = { name: 'Ana', questionLimit: 20, timerSeconds: 20, streak: 5, accuracy: 80, score: 140, total: 12, idempotencyKey: 'vieja' }
+    localStorage.setItem('fracciones:pendingScores', JSON.stringify([legacy]))
+
+    expect(loadPendingScores()).toEqual([{ ...legacy, topicCategory: 'fracciones' }])
   })
 })

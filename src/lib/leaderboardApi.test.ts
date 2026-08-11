@@ -44,7 +44,7 @@ describe('checkName', () => {
 })
 
 describe('submitScore', () => {
-  const submission = { name: 'Ana', questionLimit: 20, timerSeconds: 20, streak: 5, accuracy: 80, score: 140, total: 12, idempotencyKey: 'session-abc' }
+  const submission = { name: 'Ana', questionLimit: 20, topicCategory: 'fracciones' as const, timerSeconds: 20, streak: 5, accuracy: 80, score: 140, total: 12, idempotencyKey: 'session-abc' }
 
   it('posts the submission with the device token and returns true on success', async () => {
     vi.mocked(fetch).mockResolvedValue({ ok: true } as Response)
@@ -69,7 +69,7 @@ describe('fetchTop', () => {
   it('returns the entries array on success', async () => {
     const entries = [{ name: 'Ana', bestStreak: 9, bestAccuracy: 90, totalSessions: 3 }]
     vi.mocked(fetch).mockResolvedValue(jsonResponse({ entries }) as Response)
-    expect(await fetchTop(20)).toEqual(entries)
+    expect(await fetchTop(20, 'fracciones')).toEqual(entries)
   })
 
   it.each([
@@ -77,11 +77,21 @@ describe('fetchTop', () => {
     ['a malformed payload', jsonResponse({ nope: true }), null],
   ])('returns null on %s', async (_label, response, expected) => {
     vi.mocked(fetch).mockResolvedValue(response as Response)
-    expect(await fetchTop(20)).toBe(expected)
+    expect(await fetchTop(20, 'fracciones')).toBe(expected)
   })
 
   it('returns null when the request throws (offline)', async () => {
     vi.mocked(fetch).mockRejectedValue(new Error('network down'))
-    expect(await fetchTop(20)).toBeNull()
+    expect(await fetchTop(20, 'fracciones')).toBeNull()
+  })
+})
+
+describe('fetchTop — categoría de tema', () => {
+  it('pide la tabla de la categoría indicada', async () => {
+    vi.mocked(fetch).mockResolvedValue(jsonResponse({ entries: [] }) as Response)
+    await fetchTop(20, 'decimales')
+    const url = vi.mocked(fetch).mock.calls[0][0] as string
+    expect(url).toContain('topicCategory=decimales')
+    expect(url).toContain('questionLimit=20')
   })
 })

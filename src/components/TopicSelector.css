@@ -1,0 +1,112 @@
+/* Selector de temas — construido siguiendo BPL DS: tokens de componente
+   `--chip-*` cuyo nombre coincide con la propiedad CSS que resuelven, estados
+   redeclarando el mismo token (nunca `--chip-background-hover`), resolvedores
+   privados con prefijo `--_`, y el estado vivo en el `:checked` nativo en vez
+   de una clase `.is-active`. Sin Tailwind: el código nuevo no lo agrega. */
+
+.temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.tema-chip {
+  --chip-background: #1e1e38;
+  --chip-color: #ffffff;
+  --chip-border-color: #2a2a4a;
+  --chip-radius: 0.75rem;
+  --chip-padding: 0.5rem 1rem;
+  --chip-shadow: 3px 3px 0 #000;
+
+  --_background: var(--chip-background);
+  --_color: var(--chip-color);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: var(--chip-padding);
+  border: 3px solid var(--chip-border-color);
+  border-radius: var(--chip-radius);
+  background: var(--_background);
+  color: var(--_color);
+  box-shadow: var(--chip-shadow);
+  /* Misma tipografía display que el resto del Home: el DS aporta el patrón
+     y los tokens, no la identidad visual del juego. */
+  font-family: 'Bangers', cursive;
+  font-size: 1.125rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 120ms ease, color 120ms ease, transform 80ms ease;
+}
+
+@media (min-width: 640px) {
+  .tema-chip {
+    --chip-padding: 0.625rem 1.25rem;
+    font-size: 1.375rem;
+  }
+}
+
+/* El input nativo sigue siendo el control real: accesible, enfocable y
+   operable con teclado. Solo se le quita la pintura por defecto. */
+.tema-chip__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.tema-chip__marca {
+  display: inline-grid;
+  place-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid currentColor;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.tema-chip:hover {
+  --chip-background: #2a2a4a;
+}
+
+.tema-chip:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.tema-chip:has(.tema-chip__input:checked) {
+  --chip-background: #ffd700;
+  --chip-color: #000000;
+  --chip-border-color: #000000;
+}
+
+.tema-chip:has(.tema-chip__input:focus-visible) {
+  outline: 3px solid #1d9bf0;
+  outline-offset: 3px;
+}
+
+.temas-aviso {
+  margin-top: 0.5rem;
+  color: #ff5252;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+/* Variante compacta para la cabecera de la tabla de posiciones, donde los
+   chips acompañan y no protagonizan. */
+.temas--compacto {
+  margin-bottom: 0.75rem;
+}
+
+.temas--compacto .tema-chip {
+  --chip-padding: 0.25rem 0.625rem;
+  --chip-shadow: 2px 2px 0 #000;
+  font-size: 0.875rem;
+  border-width: 2px;
+}

@@ -1,0 +1,64 @@
+schema: spec-driven
+
+context: |
+  Fracciones VS — juego de práctica de matemáticas para niños, en español.
+  Lo creó el dueño para que su hijo practique con sus amigos; no es un producto comercial.
+
+  Stack: React 19 + TypeScript + Vite + Tailwind, desplegado como Cloudflare Worker
+  (worker/index.ts) que sirve la SPA y expone /api/leaderboard/* sobre D1.
+  Tests: Vitest + Testing Library, colocados junto al código (foo.ts + foo.test.ts).
+  Package manager: pnpm. No hay script "test": se corre `pnpm vitest run`.
+
+  Restricciones de producto que no se negocian sin discutirlo:
+  - Todo el texto de la UI va en español.
+  - Sin cuentas ni login. La identidad es un UUID por dispositivo en localStorage.
+  - Offline-first: la red es opcional. Los fallos de API se tragan y se encolan;
+    un problema de red nunca puede bloquear el juego. (Excepción consciente y futura:
+    el modo VS en vivo entre dispositivos, que sí requiere red.)
+  - Los archivos grandes y delicados son src/components/Game.tsx y SoloGame.tsx.
+    Preferir cambios que NO los toquen.
+  - El estilo es juvenil y moderno, de arcade de pelea: colores saturados, tipografía
+    display, sombras duras, botones con relieve, animación con framer-motion.
+    Nunca derivar hacia un look corporativo o sobrio.
+  - Se usa BPL DS (https://ds.bepartnerlabs.com/AGENTS.md) como vocabulario de tokens
+    y patrones CSS, remapeando --bp-* a la identidad del juego. El código nuevo NO
+    agrega Tailwind: la intención es sacarlo en un cambio aparte.
+
+  Ver CLAUDE.md en la raíz para la arquitectura en detalle.
+
+rules:
+  proposal:
+    - Escribir en español, igual que el producto.
+  design:
+    - Escribir en español.
+    - Si el cambio altera algo que el jugador ve, invocar la skill `frontend-design`
+      de superpowers antes de fijar la dirección visual, y dejar registrada la decisión
+      estética en el design (no solo la estructura del componente).
+    - Cuando haya más de una disposición o estilo posible para una pantalla, publicar
+      una maqueta comparativa con la herramienta Artifact y decidir sobre ella,
+      en vez de describir las alternativas en prosa.
+  tasks:
+    - Escribir en español.
+    - Toda tarea que toque interfaz debe incluir un paso explícito de verificación
+      visual en la app corriendo (skill `run`), no solo pruebas automatizadas.
+    - "Seguir TDD: la tarea de pruebas va antes que la de implementación (skill `test-driven-development`)."
+    - "Antes de cerrar el cambio, incluir una tarea de verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint`, `pnpm build`."
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
