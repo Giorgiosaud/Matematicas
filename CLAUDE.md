@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-**Fracciones VS** — a Spanish-language fraction-practice game for kids, deployed as a Cloudflare Worker (`fractions.bepartnerlabs.com`) that serves a React SPA plus a small D1-backed leaderboard API. All UI copy is in Spanish; keep it that way.
+**Fracciones VS** — a Spanish-language fraction-practice game for kids, deployed as a Cloudflare Worker (`math.giorgiosaud.io`) that serves a React SPA plus a small D1-backed leaderboard API. All UI copy is in Spanish; keep it that way.
 
 It was built by the owner so his son could practice fractions with his friends — which is why it's Spanish-only, two players share one keyboard, there are no accounts, and a network failure never blocks play.
 

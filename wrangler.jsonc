@@ -21,6 +21,6 @@
     "nodejs_compat"
   ],
   "routes": [
-    { "pattern": "fractions.bepartnerlabs.com", "custom_domain": true }
+    { "pattern": "math.giorgiosaud.io", "custom_domain": true }
   ]
 }
