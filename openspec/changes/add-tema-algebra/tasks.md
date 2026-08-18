@@ -45,11 +45,11 @@
 **Interfaces:** `Render(props: ExerciseRenderProps)` · `describe(e: Exercise): string` · `hint(e: Exercise): string`
 
 - [x] 4.1 Escribir `text.ts` con los enunciados y pistas en español, siguiendo la redacción del libro. Va aparte del `Render` para no romper fast refresh, igual que en fracciones y decimales.
-- [ ] 4.2 Implementar la **tira de secuencia**: términos en fila con el `?` amarillo en el término preguntado, envolviendo en vez de hacer scroll horizontal, y `…` antes de la pregunta cuando el término pedido es lejano.
-- [ ] 4.3 Implementar la **tarjeta de expresión**, con la sustitución de variables encima y números tabulares.
+- [x] 4.2 Implementar la **tira de secuencia**: términos en fila con el `?` amarillo en el término preguntado, envolviendo en vez de hacer scroll horizontal, y `…` antes de la pregunta cuando el término pedido es lejano.
+- [x] 4.3 Implementar la **tarjeta de expresión**, con la sustitución de variables encima y números tabulares.
 - [x] 4.4 Escribir `Render.css` siguiendo BPL DS como en `TopicSelector.css` —tokens nombrados por la propiedad, resolutores privados con `--_`—. **Sin Tailwind nuevo.**
-- [ ] 4.5 Verificar que el chip de álgebra aparece en el selector y que la selección persiste entre recargas.
-- [ ] 4.6 Verificación visual con la skill `run`: jugar una partida solo de álgebra en el navegador y revisar los tres formatos —tira, tira con `…`, tarjeta— en ancho de teléfono y de escritorio. Confirmar que ninguna expresión muestra `×` ni `*`.
+- [x] 4.5 Verificar que el chip de álgebra aparece en el selector y que la selección persiste entre recargas.
+- [x] 4.6 Verificación visual con la skill `run`: jugar una partida solo de álgebra en el navegador y revisar los tres formatos —tira, tira con `…`, tarjeta— en ancho de teléfono y de escritorio. Confirmar que ninguna expresión muestra `×` ni `*`.
 
 ## 5. Categoría de tabla de posiciones
 
@@ -57,7 +57,7 @@
 
 - [x] 5.1 Escribir las pruebas: `topicCategory(['algebra'])` es `'algebra'`; combinada con cualquier otro tema es `'mixto'`; y `readTopicCategory('algebra')` en el Worker devuelve `'algebra'` en vez de caer a `'fracciones'`.
 - [x] 5.2 Sumar `'algebra'` a `TopicCategory` en el cliente y a `TOPIC_CATEGORIES` en el Worker.
-- [ ] 5.3 Comprobar contra el Worker corriendo que una partida de álgebra queda en su tabla y no aparece en las otras tres.
+- [x] 5.3 Comprobar contra el Worker corriendo que una partida de álgebra queda en su tabla y no aparece en las otras tres.
 
 ## 6. Tips del tema
 
