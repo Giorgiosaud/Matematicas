@@ -29,15 +29,15 @@
 **Files:** Modify: `src/lib/topics/algebra/generators.ts`, `src/lib/topics/algebra/generators.test.ts` · Create: `src/lib/topics/algebra/frases.ts`, `src/lib/topics/algebra/frases.test.ts`
 **Interfaces:** `frase(expr: Expr): string` · `evaluar(expr: Expr, valores: Record<string, number>): number`
 
-- [ ] 3.1 Escribir las pruebas de `frases.ts` con las redacciones textuales del libro: doble, triple, mitad, tercera parte, cuarta parte, suma, diferencia, sucesor, antecesor, aumentado en, disminuido en.
-- [ ] 3.2 Implementar `frases.ts`, reutilizando `expresion.ts` para el lado algebraico.
-- [ ] 3.3 Escribir las pruebas del generador **de la frase a la expresión**, con distractores que confundan operación (doble por triple, sumar por restar).
-- [ ] 3.4 Implementar ese generador.
-- [ ] 3.5 Escribir las pruebas del generador **de la expresión a la frase**.
-- [ ] 3.6 Implementar ese generador.
-- [ ] 3.7 Escribir las pruebas de `evaluar` y del generador **valorizar**: una y dos variables, y un distractor por orden de operaciones. Incluir la prueba de que **ninguna opción se repite** cuando el distractor por precedencia coincide con la respuesta.
-- [ ] 3.8 Implementar `evaluar` y el generador de valorizar.
-- [ ] 3.9 Comprobar que las letras rotan y no siempre sale `x`.
+- [x] 3.1 Escribir las pruebas de `frases.ts` con las redacciones textuales del libro: doble, triple, mitad, tercera parte, cuarta parte, suma, diferencia, sucesor, antecesor, aumentado en, disminuido en.
+- [x] 3.2 Implementar `frases.ts`, reutilizando `expresion.ts` para el lado algebraico.
+- [x] 3.3 Escribir las pruebas del generador **de la frase a la expresión**, con distractores que confundan operación (doble por triple, sumar por restar).
+- [x] 3.4 Implementar ese generador.
+- [x] 3.5 Escribir las pruebas del generador **de la expresión a la frase**.
+- [x] 3.6 Implementar ese generador.
+- [x] 3.7 Escribir las pruebas de `evaluar` y del generador **valorizar**: una y dos variables, y un distractor por orden de operaciones. Incluir la prueba de que **ninguna opción se repite** cuando el distractor por precedencia coincide con la respuesta.
+- [x] 3.8 Implementar `evaluar` y el generador de valorizar.
+- [x] 3.9 Comprobar que las letras rotan y no siempre sale `x`.
 
 ## 4. Presentación
 

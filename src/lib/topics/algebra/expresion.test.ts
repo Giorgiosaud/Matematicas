@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatear, num, producto, resta, suma, termino, variable } from './expresion'
+import { division, evaluar, formatear, num, producto, resta, suma, termino, tieneDivision, variable, variablesDe } from './expresion'
 
 describe('formatear', () => {
   it('yuxtapone el coeficiente cuando va delante de la variable', () => {
@@ -64,5 +64,39 @@ describe('formatear', () => {
       expect(texto).not.toContain('×')
       expect(texto).not.toContain('*')
     }
+  })
+})
+
+describe('evaluar', () => {
+  it('resuelve una expresión de una variable', () => {
+    expect(evaluar(resta(termino(3, 'x'), num(5)), { x: 4 })).toBe(7)
+  })
+
+  it('respeta la precedencia del producto sobre la suma', () => {
+    // p.91 #8 del libro: si a = 4 y b = 2, 9b + a · b vale 26.
+    const expr = suma(termino(9, 'b'), producto(variable('a'), variable('b')))
+    expect(evaluar(expr, { a: 4, b: 2 })).toBe(26)
+  })
+
+  it('una variable sin valor cuenta como cero en vez de dar NaN', () => {
+    expect(evaluar(termino(3, 'x'), {})).toBe(0)
+  })
+})
+
+describe('variablesDe', () => {
+  it('enumera las letras en orden de aparición y sin repetir', () => {
+    const expr = suma(termino(9, 'b'), producto(variable('a'), variable('b')))
+    expect(variablesDe(expr)).toEqual(['b', 'a'])
+  })
+
+  it('una expresión sin letras no devuelve ninguna', () => {
+    expect(variablesDe(num(7))).toEqual([])
+  })
+})
+
+describe('tieneDivision', () => {
+  it('detecta la división aunque esté anidada', () => {
+    expect(tieneDivision(resta(division(variable('x'), num(3)), variable('y')))).toBe(true)
+    expect(tieneDivision(suma(termino(3, 'x'), num(9)))).toBe(false)
   })
 })

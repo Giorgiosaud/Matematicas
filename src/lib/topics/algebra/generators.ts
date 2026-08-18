@@ -1,6 +1,15 @@
 import type { Exercise } from '../types'
+import type { Expr } from './expresion'
+import { evaluar, formatear, tieneDivision, variablesDe } from './expresion'
+import type { Plantilla } from './frases'
+import { PLANTILLAS, plantillasVecinas } from './frases'
 import type { Operacion, Secuencia } from './secuencia'
 import { describirPatron, secuencia, termino, terminos, tramoValido } from './secuencia'
+
+// Las letras que usa el libro. Fijar siempre `x` daría una falsa sensación de
+// dominio: el libro valoriza `9b + a · b` y pregunta por `4 · s`, y un niño que
+// solo practicó con `x` cree que la letra es parte de la operación.
+const LETRAS = ['x', 'y', 'a', 'b', 'c', 'n', 's', 'w', 'z']
 
 export interface AlgebraPayload {
   secuencia?: Secuencia
@@ -12,6 +21,10 @@ export interface AlgebraPayload {
   posicionPedida?: number
   // Enunciado ya redactado cuando la pregunta se plantea con palabras.
   prompt?: string
+  // Expresión que se muestra, ya formateada con la notación del libro.
+  expresion?: string
+  // Valores de las letras en los ejercicios de valorizar ("si a = 4 y b = 2").
+  valores?: Record<string, number>
 }
 
 // Único punto de estrechamiento del payload en el tema.
@@ -167,9 +180,141 @@ function makeConstruir(round: number): Exercise {
   return make('construir', answer, buildOptions(answer, vecinos), { secuencia: sec, mostrados: terminos(sec, largo), prompt })
 }
 
+// ── Lenguaje algebraico y valorizar ──────────────────────────────────────────
+
+// Dos letras distintas para las plantillas que las necesitan.
+function dosLetras(): [string, string] {
+  const v = pick(LETRAS)
+  const otras = LETRAS.filter(letra => letra !== v)
+  return [v, pick(otras)]
+}
+
+function plantillaDeRonda(round: number): Plantilla {
+  // Las de dos letras piden leer con más cuidado, así que entran más adelante.
+  const disponibles = round <= 2 ? PLANTILLAS.filter(p => p.letras === 1) : PLANTILLAS
+  return pick(disponibles)
+}
+
+function makeFraseAExpresion(round: number): Exercise {
+  const [v, w] = dosLetras()
+  const n = randInt(2, 20)
+  const plantilla = plantillaDeRonda(round)
+  const { frase, expr } = plantilla.construir(v, n, w)
+  const answer = formatear(expr)
+  const vecinas = plantillasVecinas(plantilla.id).map(p => formatear(p.construir(v, n, w).expr))
+  return make('frase-a-expresion', answer, buildOptions(answer, vecinas), { prompt: frase })
+}
+
+function makeExpresionAFrase(round: number): Exercise {
+  const [v, w] = dosLetras()
+  const n = randInt(2, 20)
+  const plantilla = plantillaDeRonda(round)
+  const { frase, expr } = plantilla.construir(v, n, w)
+  const vecinas = plantillasVecinas(plantilla.id).map(p => p.construir(v, n, w).frase)
+  return make('expresion-a-frase', frase, buildOptions(frase, vecinas), {
+    expresion: formatear(expr),
+  })
+}
+
+function makeValorizar(round: number): Exercise {
+  const [v, w] = dosLetras()
+  const n = randInt(2, 12)
+  // Solo plantillas cuyo valor numérico sea entero: la mitad o la tercera parte
+  // de un número darían decimales, y esta unidad todavía no los mezcla. Se mira
+  // el árbol de la expresión, no el nombre de la plantilla.
+  const enteras = PLANTILLAS.filter(p => !tieneDivision(p.construir(v, n, w).expr))
+  const candidatas = round <= 2 ? enteras.filter(p => p.letras === 1) : enteras
+  const plantilla = pick(candidatas)
+  const { expr } = plantilla.construir(v, n, w)
+
+  // Los valores se sortean hasta que el resultado sea entero y no negativo. El
+  // libro elige siempre valores así (`2b − a` con a=10 y b=5 da 0, nunca −5):
+  // los números negativos son de otro curso y aquí solo confundirían.
+  const { valores, valor } = valoresQueDanEnteroPositivo(expr)
+  const answer = String(valor)
+  return make('valorizar', answer, buildOptions(answer, distractoresDeValor(expr, valores, valor)), {
+    expresion: formatear(expr),
+    valores,
+  })
+}
+
+function valoresQueDanEnteroPositivo(expr: Expr): { valores: Record<string, number>; valor: number } {
+  const letras = variablesDe(expr)
+  for (let intento = 0; intento < 30; intento++) {
+    const valores: Record<string, number> = {}
+    // Se sortea de mayor a menor por posición: la primera letra suele ser el
+    // minuendo, así que darle el rango alto reduce los intentos fallidos.
+    letras.forEach((letra, i) => { valores[letra] = i === 0 ? randInt(6, 14) : randInt(2, 6) })
+    const valor = evaluar(expr, valores)
+    if (Number.isInteger(valor) && valor >= 0) return { valores, valor }
+  }
+  // Salida segura: con todas las letras iguales y grandes, ninguna de las
+  // plantillas del catálogo baja de cero.
+  const valores = Object.fromEntries(letras.map(letra => [letra, 20]))
+  return { valores, valor: evaluar(expr, valores) }
+}
+
+// Los errores que este ejercicio busca cazar: operar de izquierda a derecha
+// ignorando la precedencia, y confundir el coeficiente con una suma.
+function distractoresDeValor(expr: Expr, valores: Record<string, number>, correcto: number): string[] {
+  const candidatos = [
+    izquierdaADerecha(expr, valores),
+    coeficienteComoSuma(expr, valores),
+    correcto + 1,
+    correcto - 1,
+  ]
+  return candidatos
+    .filter(valor => Number.isInteger(valor) && valor !== correcto && valor >= 0)
+    .map(String)
+}
+
+// Evalúa como si no hubiera precedencia: (a + b) · c en vez de a + b · c.
+function izquierdaADerecha(expr: Expr, valores: Record<string, number>): number {
+  switch (expr.tipo) {
+    case 'suma':
+      return aplanarIzquierda(expr.izq, expr.der, valores, (a, b) => a + b)
+    case 'resta':
+      return aplanarIzquierda(expr.izq, expr.der, valores, (a, b) => a - b)
+    default:
+      return evaluar(expr, valores)
+  }
+}
+
+function aplanarIzquierda(
+  izq: Expr,
+  der: Expr,
+  valores: Record<string, number>,
+  combinar: (a: number, b: number) => number,
+): number {
+  if (der.tipo === 'producto') {
+    return combinar(evaluar(izq, valores), evaluar(der.izq, valores)) * evaluar(der.der, valores)
+  }
+  if (der.tipo === 'termino') {
+    return combinar(evaluar(izq, valores), der.coeficiente) * (valores[der.variable] ?? 0)
+  }
+  return combinar(evaluar(izq, valores), evaluar(der, valores))
+}
+
+// Leer `3x` como `3 + x`: el error de quien no ve la multiplicación implícita.
+function coeficienteComoSuma(expr: Expr, valores: Record<string, number>): number {
+  switch (expr.tipo) {
+    case 'termino':
+      return expr.coeficiente + (valores[expr.variable] ?? 0)
+    case 'suma':
+      return coeficienteComoSuma(expr.izq, valores) + coeficienteComoSuma(expr.der, valores)
+    case 'resta':
+      return coeficienteComoSuma(expr.izq, valores) - coeficienteComoSuma(expr.der, valores)
+    default:
+      return evaluar(expr, valores)
+  }
+}
+
 export const generators: Record<string, (round: number) => Exercise> = {
   patron: makePatron,
   completar: makeCompletar,
   'termino-lejano': makeTerminoLejano,
   construir: makeConstruir,
+  'frase-a-expresion': makeFraseAExpresion,
+  'expresion-a-frase': makeExpresionAFrase,
+  valorizar: makeValorizar,
 }

@@ -73,3 +73,68 @@ export function formatear(expr: Expr): string {
       return `${formatear(expr.izq)} : ${formatear(expr.der)}`
   }
 }
+
+// Valor numérico de la expresión para unos valores dados. Es lo que el libro
+// llama «valorizar»: la operación se resuelve respetando la precedencia, que es
+// justo lo que estos ejercicios quieren comprobar.
+export function evaluar(expr: Expr, valores: Record<string, number>): number {
+  switch (expr.tipo) {
+    case 'num':
+      return expr.valor
+    case 'var':
+      return valores[expr.nombre] ?? 0
+    case 'termino':
+      return expr.coeficiente * (valores[expr.variable] ?? 0)
+    case 'suma':
+      return evaluar(expr.izq, valores) + evaluar(expr.der, valores)
+    case 'resta':
+      return evaluar(expr.izq, valores) - evaluar(expr.der, valores)
+    case 'producto':
+      return evaluar(expr.izq, valores) * evaluar(expr.der, valores)
+    case 'division':
+      return evaluar(expr.izq, valores) / evaluar(expr.der, valores)
+  }
+}
+
+// Qué letras usa la expresión, en orden de aparición. Los enunciados de
+// valorizar necesitan enumerarlas ("si a = 4 y b = 2").
+export function variablesDe(expr: Expr): string[] {
+  const vistas: string[] = []
+  const recorrer = (e: Expr): void => {
+    switch (e.tipo) {
+      case 'var':
+        if (!vistas.includes(e.nombre)) vistas.push(e.nombre)
+        break
+      case 'termino':
+        if (!vistas.includes(e.variable)) vistas.push(e.variable)
+        break
+      case 'suma':
+      case 'resta':
+      case 'producto':
+      case 'division':
+        recorrer(e.izq)
+        recorrer(e.der)
+        break
+      case 'num':
+        break
+    }
+  }
+  recorrer(expr)
+  return vistas
+}
+
+// Si la expresión divide en algún punto, su valor numérico puede no ser entero.
+// Se comprueba sobre el árbol y no por el nombre de la plantilla: filtrar por
+// nombre ya dejó pasar «la tercera parte de un número disminuida en otro».
+export function tieneDivision(expr: Expr): boolean {
+  switch (expr.tipo) {
+    case 'division':
+      return true
+    case 'suma':
+    case 'resta':
+    case 'producto':
+      return tieneDivision(expr.izq) || tieneDivision(expr.der)
+    default:
+      return false
+  }
+}

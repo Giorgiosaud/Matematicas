@@ -116,3 +116,86 @@ describe('construir', () => {
     }
   })
 })
+
+describe('frase-a-expresion', () => {
+  const ejercicios = muestrear('frase-a-expresion')
+
+  it('muestra la frase y responde con la expresión', () => {
+    for (const ex of ejercicios) {
+      expect(algebraPayload(ex).prompt).toBeTruthy()
+      expect(ex.answer).not.toBe('')
+    }
+  })
+
+  it('ninguna opción usa aspa ni asterisco', () => {
+    for (const ex of ejercicios) {
+      for (const opcion of ex.options) {
+        expect(opcion).not.toContain('×')
+        expect(opcion).not.toContain('*')
+      }
+    }
+  })
+
+  it('ofrece más de una opción para elegir', () => {
+    for (const ex of ejercicios) {
+      expect(ex.options.length).toBeGreaterThanOrEqual(2)
+    }
+  })
+})
+
+describe('expresion-a-frase', () => {
+  const ejercicios = muestrear('expresion-a-frase')
+
+  it('muestra la expresión y responde con la frase', () => {
+    for (const ex of ejercicios) {
+      expect(algebraPayload(ex).expresion).toBeTruthy()
+      expect(ex.answer.endsWith('.')).toBe(true)
+    }
+  })
+})
+
+describe('valorizar', () => {
+  const ejercicios = muestrear('valorizar')
+
+  it('el resultado es un entero no negativo', () => {
+    for (const ex of ejercicios) {
+      const valor = Number(ex.answer)
+      expect(Number.isInteger(valor)).toBe(true)
+      expect(valor).toBeGreaterThanOrEqual(0)
+    }
+  })
+
+  it('da un valor a cada letra que aparece en la expresión', () => {
+    for (const ex of ejercicios) {
+      const { expresion, valores } = algebraPayload(ex)
+      for (const letra of Object.keys(valores!)) {
+        expect(expresion).toContain(letra)
+      }
+      expect(Object.keys(valores!).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('ninguna opción se repite, ni cuando el distractor coincide con la respuesta', () => {
+    for (const ex of ejercicios) {
+      expect(new Set(ex.options).size).toBe(ex.options.length)
+    }
+  })
+
+  it('todas las opciones son números', () => {
+    for (const ex of ejercicios) {
+      for (const opcion of ex.options) {
+        expect(Number.isNaN(Number(opcion))).toBe(false)
+      }
+    }
+  })
+})
+
+describe('las letras rotan', () => {
+  it('no sale siempre x', () => {
+    const letras = new Set<string>()
+    for (const ex of muestrear('valorizar')) {
+      for (const letra of Object.keys(algebraPayload(ex).valores!)) letras.add(letra)
+    }
+    expect(letras.size).toBeGreaterThan(1)
+  })
+})

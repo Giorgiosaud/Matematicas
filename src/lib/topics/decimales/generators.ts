@@ -3,7 +3,8 @@ import type { FractionValue } from '../../types'
 import { simplifyFraction, fractionToString } from '../../fractions'
 import type { Decimal } from './decimal'
 import { compare, decimal, digitAt, format, fromFraction, roundTo } from './decimal'
-import { leerDecimal, nombrePosicion, numeroEnPalabras } from './lectura'
+import { leerDecimal, nombrePosicion } from './lectura'
+import { numeroEnPalabras } from '../../palabras'
 
 export interface DecimalesPayload {
   value: Decimal
