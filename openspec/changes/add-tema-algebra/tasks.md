@@ -3,8 +3,8 @@
 **Files:** Create: `src/lib/topics/algebra/expresion.ts`, `src/lib/topics/algebra/expresion.test.ts`, `src/lib/topics/algebra/index.ts` · Modify: `src/lib/topics/types.ts`, `src/lib/topics/index.ts`
 **Interfaces:** `termino(coeficiente: number, variable: string): string` · `producto(...factores: string[]): string` · `formatear(expr: Expr): string`
 
-- [ ] 1.1 Escribir las pruebas de `expresion.ts` contra los ejemplos textuales del libro: `3x + 9`, `9b`, `a + 12b`, `9c + 3a`, `a · b`, `x · x`, `4 · s`, y el caso mixto `9b + a · b`. Incluir una prueba que falle si aparece `×` o `*`.
-- [ ] 1.2 Implementar `expresion.ts` con la regla mixta: coeficiente junto a variable se yuxtapone; factores sueltos van con punto medio. Coeficiente 1 se omite (`x`, no `1x`).
+- [x] 1.1 Escribir las pruebas de `expresion.ts` contra los ejemplos textuales del libro: `3x + 9`, `9b`, `a + 12b`, `9c + 3a`, `a · b`, `x · x`, `4 · s`, y el caso mixto `9b + a · b`. Incluir una prueba que falle si aparece `×` o `*`.
+- [x] 1.2 Implementar `expresion.ts` con la regla mixta: coeficiente junto a variable se yuxtapone; factores sueltos van con punto medio. Coeficiente 1 se omite (`x`, no `1x`).
 - [ ] 1.3 Sumar `'algebra'` a `TopicId` en `types.ts`.
 - [ ] 1.4 Crear `algebra/index.ts` con el objeto `Topic` y registrarlo en `topics/index.ts`. Verificar que `registry.test.ts` sigue verde con el tema vacío antes de agregar generadores.
 
@@ -13,8 +13,8 @@
 **Files:** Create: `src/lib/topics/algebra/secuencia.ts`, `src/lib/topics/algebra/secuencia.test.ts` · Modify: `src/lib/topics/algebra/generators.ts`, `src/lib/topics/algebra/generators.test.ts`
 **Interfaces:** `terminos(sec: Secuencia, cantidad: number): number[]` · `termino(sec: Secuencia, posicion: number): number` · `describirPatron(sec: Secuencia): string`
 
-- [ ] 2.1 Escribir las pruebas de `secuencia.ts`: términos de una secuencia aditiva y de una multiplicativa, término lejano sin enumerar, y que un paso negativo o una división produzcan enteros (nada de decimales sueltos en una unidad que aún no los mezcla).
-- [ ] 2.2 Implementar `secuencia.ts` con la secuencia como dato (`inicio`, `paso`, `operacion`).
+- [x] 2.1 Escribir las pruebas de `secuencia.ts`: términos de una secuencia aditiva y de una multiplicativa, término lejano sin enumerar, y que un paso negativo o una división produzcan enteros (nada de decimales sueltos en una unidad que aún no los mezcla).
+- [x] 2.2 Implementar `secuencia.ts` con la secuencia como dato (`inicio`, `paso`, `operacion`).
 - [ ] 2.3 Escribir las pruebas del generador **patrón de formación**: la respuesta correcta describe el patrón real y los distractores son patrones plausibles sobre el mismo número, no valores al azar.
 - [ ] 2.4 Implementar el generador de patrón de formación.
 - [ ] 2.5 Escribir las pruebas del generador **completar secuencia**, cubriendo el término faltante al final y en medio.

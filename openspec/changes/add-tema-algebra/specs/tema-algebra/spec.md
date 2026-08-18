@@ -21,7 +21,11 @@ El registro de temas SHALL incluir un tema `algebra`, con el mismo contrato que 
 
 ### Requirement: Notación algebraica del libro
 
-Las expresiones SHALL escribirse con la notación del libro del alumno, que combina dos reglas: un coeficiente numérico junto a una variable se escribe **yuxtapuesto** (`3x`, `9b`, `12b`, `5a`), y un producto entre factores sueltos —variable por variable, o número por número— se escribe con **punto medio** (`a · b`, `x · x`, `4 · s`). Ambas SHALL poder convivir en una misma expresión. Los signos `×` y `*` SHALL NOT aparecer nunca. La división SHALL escribirse con dos puntos (`24 : 6`).
+Las expresiones SHALL escribirse con la notación del libro del alumno. Un producto SHALL yuxtaponerse **solo cuando el número va delante de la variable** (`3x`, `9b`, `12b`, `5a`), y SHALL escribirse con **punto medio** en cualquier otro caso: variable delante de número (`x · 2`), variable por variable (`a · x`, `x · x`) y número por número (`5 · 8`). Ambas formas SHALL poder convivir en una misma expresión.
+
+Cuando una pregunta contraste las cuatro operaciones sobre los mismos dos operandos (`4 + s`, `4 − s`, `4 · s`, `4 : s`), la multiplicación SHALL escribirse con punto medio aunque el número vaya delante: yuxtaponer ahí rompería el paralelismo de las opciones y delataría cuál es la de multiplicar.
+
+El coeficiente 1 SHALL omitirse (`x`, no `1x`). La resta SHALL usar el signo menos (`−`) y no el guion del teclado. Los signos `×` y `*` SHALL NOT aparecer nunca. La división SHALL escribirse con dos puntos (`24 : 6`).
 
 La regla SHALL vivir en un único punto del tema, de modo que ajustarla sea un cambio localizado.
 
@@ -34,6 +38,11 @@ La regla SHALL vivir en un único punto del tema, de modo que ajustarla sea un c
 
 - **WHEN** un ejercicio combina un coeficiente con un producto de variables
 - **THEN** la expresión se lee `9b + a · b`, con el punto medio solo entre las dos variables
+
+#### Scenario: La variable va delante del número
+
+- **WHEN** una expresión multiplica una variable por un número en ese orden
+- **THEN** se lee `x · 2` y no `x2`, que sería ilegible
 
 #### Scenario: Ninguna expresión usa aspa
 
