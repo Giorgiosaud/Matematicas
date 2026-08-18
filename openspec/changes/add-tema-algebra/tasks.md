@@ -59,20 +59,19 @@
 - [x] 5.2 Sumar `'algebra'` a `TopicCategory` en el cliente y a `TOPIC_CATEGORIES` en el Worker.
 - [x] 5.3 Comprobar contra el Worker corriendo que una partida de álgebra queda en su tabla y no aparece en las otras tres.
 
-## 6. Tips del tema
+## 6. Tips del tema — movido al roadmap
 
-**Files:** Modify: `src/lib/topics/types.ts`, `src/lib/topics/algebra/index.ts`
-**Interfaces:** `tips: Tip[]` en el objeto `Topic`
-
-- [ ] 6.1 Agregar el campo `tips` al contrato `Topic`, opcional, para que los temas existentes sigan válidos sin cambios.
-- [ ] 6.2 Escribir los tips de álgebra en español, cortos y accionables, apuntando a las confusiones reales: la letra no es parte de la operación, `3x` es multiplicación aunque no lleve signo, y cómo llegar a un término lejano sin contar.
-- [ ] 6.3 Dejar dicho en los tips qué cubre el tema hoy y que ecuaciones e inecuaciones llegan aparte, para que no se lea como que la unidad está completa.
+Se descarta de este cambio. Un campo `tips` sin pantalla que lo muestre es
+contenido que nadie lee, y la pantalla no cabe antes del 3 de septiembre sin
+comerse el tiempo de ecuaciones e inecuaciones, que pesan mucho más en la
+prueba. Las pistas de cada ejercicio ya explican en el momento del error, que
+es donde el niño está mirando. Anotado en `openspec/roadmap.md`.
 
 ## 7. Cierre
 
 - [ ] 7.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
 - [ ] 7.2 Revisión de código (skill `requesting-code-review`) sobre el diff completo.
-- [ ] 7.3 Actualizar `CLAUDE.md`: el registro pasa a tener tres temas y la tabla de posiciones cuatro categorías.
+- [x] 7.3 Actualizar `CLAUDE.md`: el registro pasa a tener tres temas y la tabla de posiciones cuatro categorías.
 - [ ] 7.4 Desplegar **primero el Worker y después el front**, en ese orden, para que ninguna partida de álgebra se archive con la categoría equivocada.
-- [ ] 7.5 Anotar en `openspec/roadmap.md` lo que queda fuera: ecuaciones e inecuaciones con balanza, secuencias de figuras, y la pantalla Aprende.
+- [x] 7.5 Anotar en `openspec/roadmap.md` lo que queda fuera: ecuaciones e inecuaciones con balanza, secuencias de figuras, y la pantalla Aprende.
 - [ ] 7.6 `openspec validate add-tema-algebra` y luego `openspec archive add-tema-algebra`.
