@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import fc from 'fast-check'
+import type { Expr } from './expresion'
 import { division, evaluar, formatear, num, producto, resta, suma, termino, tieneDivision, variable, variablesDe } from './expresion'
 
 describe('formatear', () => {
@@ -98,5 +100,84 @@ describe('tieneDivision', () => {
   it('detecta la división aunque esté anidada', () => {
     expect(tieneDivision(resta(division(variable('x'), num(3)), variable('y')))).toBe(true)
     expect(tieneDivision(suma(termino(3, 'x'), num(9)))).toBe(false)
+  })
+})
+
+// ── Propiedades ──────────────────────────────────────────────────────────────
+// Los ejemplos de arriba fijan la notación del libro caso por caso. Esto
+// comprueba lo mismo sobre expresiones que nadie escribió a mano: fast-check
+// arma árboles al azar y, cuando algo falla, lo reduce al caso más pequeño que
+// lo reproduce en vez de dejarte adivinando con qué entrada fue.
+
+const letraArb = fc.constantFrom('x', 'y', 'a', 'b', 'c', 'n', 's', 'w', 'z')
+
+const exprArb: fc.Arbitrary<Expr> = fc.letrec<{ expr: Expr }>(tie => ({
+  expr: fc.oneof(
+    { maxDepth: 3 },
+    fc.integer({ min: 0, max: 99 }).map(num),
+    letraArb.map(variable),
+    fc.tuple(fc.integer({ min: 1, max: 12 }), letraArb).map(([c, v]) => termino(c, v)),
+    fc.tuple(tie('expr'), tie('expr')).map(([a, b]) => suma(a, b)),
+    fc.tuple(tie('expr'), tie('expr')).map(([a, b]) => resta(a, b)),
+    fc.tuple(tie('expr'), tie('expr')).map(([a, b]) => producto(a, b)),
+    fc.tuple(tie('expr'), fc.integer({ min: 2, max: 9 })).map(([a, d]) => division(a, num(d))),
+  ),
+})).expr
+
+const valoresArb = fc.dictionary(letraArb, fc.integer({ min: 0, max: 50 }))
+
+describe('propiedades de formatear', () => {
+  it('ninguna expresión, por rara que sea, usa aspa o asterisco', () => {
+    fc.assert(fc.property(exprArb, expr => {
+      const texto = formatear(expr)
+      return !texto.includes('×') && !texto.includes('*')
+    }))
+  })
+
+  it('la resta siempre usa el signo menos y nunca el guion del teclado', () => {
+    fc.assert(fc.property(exprArb, expr => !formatear(expr).includes('-')))
+  })
+
+  it('nunca escribe un coeficiente 1 pegado a la variable', () => {
+    fc.assert(fc.property(letraArb, v => formatear(termino(1, v)) === v))
+  })
+})
+
+describe('propiedades de tieneDivision', () => {
+  it('detecta la división exactamente cuando el texto la muestra', () => {
+    fc.assert(fc.property(exprArb, expr => tieneDivision(expr) === formatear(expr).includes(' : ')))
+  })
+
+  it('una expresión sin división evaluada con enteros da un entero', () => {
+    // Es la propiedad que se rompió: una plantilla con división se coló por un
+    // filtro que miraba el nombre, el valor salió fraccionario y el ejercicio
+    // acabó con una sola opción.
+    fc.assert(fc.property(exprArb, valoresArb, (expr, valores) => {
+      fc.pre(!tieneDivision(expr))
+      return Number.isInteger(evaluar(expr, valores))
+    }))
+  })
+})
+
+describe('propiedades de variablesDe', () => {
+  it('no repite letras', () => {
+    fc.assert(fc.property(exprArb, expr => {
+      const letras = variablesDe(expr)
+      return new Set(letras).size === letras.length
+    }))
+  })
+
+  it('enumera justo las letras que aparecen en el texto', () => {
+    fc.assert(fc.property(exprArb, expr => {
+      const texto = formatear(expr)
+      return variablesDe(expr).every(letra => texto.includes(letra))
+    }))
+  })
+
+  it('si no usa letras, su valor no depende de los valores dados', () => {
+    fc.assert(fc.property(exprArb, valoresArb, (expr, valores) => {
+      fc.pre(variablesDe(expr).length === 0)
+      return evaluar(expr, valores) === evaluar(expr, {})
+    }))
   })
 })

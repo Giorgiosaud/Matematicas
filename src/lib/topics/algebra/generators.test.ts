@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import fc from 'fast-check'
 import { algebraPayload, generators } from './generators'
 import { describirPatron, terminos } from './secuencia'
 
@@ -197,5 +198,36 @@ describe('las letras rotan', () => {
       for (const letra of Object.keys(algebraPayload(ex).valores!)) letras.add(letra)
     }
     expect(letras.size).toBeGreaterThan(1)
+  })
+})
+
+// ── Propiedades ──────────────────────────────────────────────────────────────
+// Los generadores sortean por dentro, así que lo que fast-check controla aquí
+// es la ronda. Sigue valiendo: si un contrato solo se rompe en la ronda 13,
+// el informe lo dice en vez de dejar un fallo intermitente sin entrada conocida.
+
+const rondaArb = fc.integer({ min: 1, max: 30 })
+const tipoArb = fc.constantFrom(...(Object.keys(generators) as (keyof typeof generators)[]))
+
+describe('propiedades de todos los generadores', () => {
+  it('siempre ofrece al menos dos opciones distintas', () => {
+    fc.assert(fc.property(tipoArb, rondaArb, (tipo, ronda) => {
+      const ex = generators[tipo](ronda)
+      return ex.options.length >= 2 && new Set(ex.options).size === ex.options.length
+    }), { numRuns: 500 })
+  })
+
+  it('la respuesta está entre las opciones exactamente una vez', () => {
+    fc.assert(fc.property(tipoArb, rondaArb, (tipo, ronda) => {
+      const ex = generators[tipo](ronda)
+      return ex.options.filter(o => o === ex.displayAnswer).length === 1
+    }), { numRuns: 500 })
+  })
+
+  it('ninguna opción queda vacía ni dice «undefined» o «NaN»', () => {
+    fc.assert(fc.property(tipoArb, rondaArb, (tipo, ronda) => {
+      const ex = generators[tipo](ronda)
+      return ex.options.every(o => o.length > 0 && !o.includes('undefined') && !o.includes('NaN'))
+    }), { numRuns: 500 })
   })
 })

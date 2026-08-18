@@ -230,7 +230,12 @@ function makeValorizar(round: number): Exercise {
   // Los valores se sortean hasta que el resultado sea entero y no negativo. El
   // libro elige siempre valores así (`2b − a` con a=10 y b=5 da 0, nunca −5):
   // los números negativos son de otro curso y aquí solo confundirían.
-  const { valores, valor } = valoresQueDanEnteroPositivo(expr)
+  const encontrado = valoresQueDanEnteroPositivo(expr)
+  // Si no hubo forma de que diera un entero no negativo, se cambia de plantilla
+  // en vez de devolver un valor raro: una respuesta fraccionaria dejaría fuera
+  // a todos los distractores y el ejercicio saldría con una sola opción.
+  if (!encontrado) return makeValorizar(1)
+  const { valores, valor } = encontrado
   const answer = String(valor)
   return make('valorizar', answer, buildOptions(answer, distractoresDeValor(expr, valores, valor)), {
     expresion: formatear(expr),
@@ -238,7 +243,7 @@ function makeValorizar(round: number): Exercise {
   })
 }
 
-function valoresQueDanEnteroPositivo(expr: Expr): { valores: Record<string, number>; valor: number } {
+function valoresQueDanEnteroPositivo(expr: Expr): { valores: Record<string, number>; valor: number } | null {
   const letras = variablesDe(expr)
   for (let intento = 0; intento < 30; intento++) {
     const valores: Record<string, number> = {}
@@ -248,10 +253,7 @@ function valoresQueDanEnteroPositivo(expr: Expr): { valores: Record<string, numb
     const valor = evaluar(expr, valores)
     if (Number.isInteger(valor) && valor >= 0) return { valores, valor }
   }
-  // Salida segura: con todas las letras iguales y grandes, ninguna de las
-  // plantillas del catálogo baja de cero.
-  const valores = Object.fromEntries(letras.map(letra => [letra, 20]))
-  return { valores, valor: evaluar(expr, valores) }
+  return null
 }
 
 // Los errores que este ejercicio busca cazar: operar de izquierda a derecha

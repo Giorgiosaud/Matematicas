@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { formatear } from './expresion'
+import fc from 'fast-check'
+import { evaluar, formatear, tieneDivision } from './expresion'
 import { PLANTILLAS, plantillaPorId, plantillasVecinas } from './frases'
 
 function texto(id: string, v = 'x', n = 9, w = 'y') {
@@ -76,5 +77,50 @@ describe('el catálogo es consistente', () => {
     for (const plantilla of PLANTILLAS.filter(p => p.letras === 1)) {
       expect(formatear(plantilla.construir('a', 9, 'b').expr)).not.toContain('b')
     }
+  })
+})
+
+// ── Propiedades ──────────────────────────────────────────────────────────────
+
+const letraArb = fc.constantFrom('x', 'y', 'a', 'b', 'c', 'n', 's', 'w', 'z')
+const nArb = fc.integer({ min: 2, max: 20 })
+const plantillaArb = fc.constantFrom(...PLANTILLAS)
+
+describe('propiedades del catálogo', () => {
+  it('toda plantilla produce frase y expresión con cualquier letra y número', () => {
+    fc.assert(fc.property(plantillaArb, letraArb, nArb, letraArb, (plantilla, v, n, w) => {
+      const { frase, expr } = plantilla.construir(v, n, w)
+      return frase.length > 0 && formatear(expr).length > 0
+    }))
+  })
+
+  it('una plantilla sin división da siempre un valor entero', () => {
+    // Ésta es la que se rompió: `tercera-menos-otro` divide pero su id no dice
+    // «parte», así que el filtro por nombre la dejó pasar hasta valorizar y el
+    // resultado salió fraccionario. Aquí la comprobación mira el árbol.
+    fc.assert(fc.property(
+      plantillaArb, letraArb, nArb, letraArb,
+      fc.integer({ min: 1, max: 30 }), fc.integer({ min: 1, max: 30 }),
+      (plantilla, v, n, w, valorV, valorW) => {
+        const { expr } = plantilla.construir(v, n, w)
+        fc.pre(!tieneDivision(expr))
+        return Number.isInteger(evaluar(expr, { [v]: valorV, [w]: valorW }))
+      },
+    ))
+  })
+
+  it('las vecinas de una plantilla nunca coinciden con ella', () => {
+    fc.assert(fc.property(plantillaArb, letraArb, nArb, letraArb, (plantilla, v, n, w) => {
+      const propia = formatear(plantilla.construir(v, n, w).expr)
+      return plantillasVecinas(plantilla.id).every(
+        vecina => formatear(vecina.construir(v, n, w).expr) !== propia,
+      )
+    }))
+  })
+
+  it('ninguna frase deja un «undefined» suelto por un número sin traducir', () => {
+    fc.assert(fc.property(plantillaArb, letraArb, nArb, letraArb, (plantilla, v, n, w) =>
+      !plantilla.construir(v, n, w).frase.includes('undefined'),
+    ))
   })
 })
