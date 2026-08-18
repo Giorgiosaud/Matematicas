@@ -69,9 +69,9 @@ es donde el niño está mirando. Anotado en `openspec/roadmap.md`.
 
 ## 7. Cierre
 
-- [ ] 7.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
-- [ ] 7.2 Revisión de código (skill `requesting-code-review`) sobre el diff completo.
+- [x] 7.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
+- [x] 7.2 Revisión del diff completo. **Hecha a mano, no con la skill `requesting-code-review`**: esa skill despacha subagentes y en esta sesión no estaban autorizados. Queda anotado por si se quiere repetir con la skill.
 - [x] 7.3 Actualizar `CLAUDE.md`: el registro pasa a tener tres temas y la tabla de posiciones cuatro categorías.
-- [ ] 7.4 Desplegar **primero el Worker y después el front**, en ese orden, para que ninguna partida de álgebra se archive con la categoría equivocada.
+- [x] 7.4 Desplegar. **Corrección:** la tarea decía «primero el Worker y después el front», y eso era un error de concepto. El Worker y los assets van en el mismo `wrangler deploy`, es un despliegue atómico y no se pueden separar. Tampoco hace falta: un cliente viejo en caché manda categorías que el Worker nuevo sigue aceptando. Desplegado el 18-ago-2026, versión `e89b47ad`, con `algebra` respondiendo en la tabla de posiciones.
 - [x] 7.5 Anotar en `openspec/roadmap.md` lo que queda fuera: ecuaciones e inecuaciones con balanza, secuencias de figuras, y la pantalla Aprende.
 - [ ] 7.6 `openspec validate add-tema-algebra` y luego `openspec archive add-tema-algebra`.
