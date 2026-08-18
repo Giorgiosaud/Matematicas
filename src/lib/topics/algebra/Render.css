@@ -1,0 +1,70 @@
+/* Tira de secuencia y tarjeta de expresión. Sigue el vocabulario de BPL DS —el
+   token se llama como la propiedad que resuelve y los resolutores privados van
+   con `--_`— pero conserva la identidad arcade del juego: display, amarillo
+   saturado y números tabulares. Sin Tailwind: el proyecto lo está sacando. */
+
+.algebra {
+  --_acento: #ffd700;
+  --_apagado: rgb(255 255 255 / 0.45);
+
+  --secuencia-gap: 0.5rem;
+  --secuencia-font-size: clamp(1.5rem, 5vw, 2.5rem);
+  --termino-color: #fff;
+  --incognita-color: var(--_acento);
+  --sustitucion-font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+  --sustitucion-color: var(--_apagado);
+  --expresion-font-size: clamp(1.75rem, 6vw, 3rem);
+}
+
+/* Envuelve en vez de hacer scroll horizontal: en el teléfono, un desplazamiento
+   lateral esconde justo el término que la pregunta señala. */
+.algebra__secuencia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--secuencia-gap);
+  font-size: var(--secuencia-font-size);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--termino-color);
+  text-align: center;
+}
+
+.algebra__termino--oculto {
+  color: var(--incognita-color);
+}
+
+.algebra__puntos {
+  color: var(--sustitucion-color);
+  letter-spacing: 0.1em;
+}
+
+.algebra__expresion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.algebra__sustitucion {
+  font-size: var(--sustitucion-font-size);
+  font-weight: 700;
+  color: var(--sustitucion-color);
+}
+
+.algebra__formula {
+  font-size: var(--expresion-font-size);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--termino-color);
+}
+
+.algebra__enunciado {
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  font-weight: 900;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}

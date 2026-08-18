@@ -5,8 +5,8 @@
 
 - [x] 1.1 Escribir las pruebas de `expresion.ts` contra los ejemplos textuales del libro: `3x + 9`, `9b`, `a + 12b`, `9c + 3a`, `a · b`, `x · x`, `4 · s`, y el caso mixto `9b + a · b`. Incluir una prueba que falle si aparece `×` o `*`.
 - [x] 1.2 Implementar `expresion.ts` con la regla mixta: coeficiente junto a variable se yuxtapone; factores sueltos van con punto medio. Coeficiente 1 se omite (`x`, no `1x`).
-- [ ] 1.3 Sumar `'algebra'` a `TopicId` en `types.ts`.
-- [ ] 1.4 Crear `algebra/index.ts` con el objeto `Topic` y registrarlo en `topics/index.ts`. Verificar que `registry.test.ts` sigue verde con el tema vacío antes de agregar generadores.
+- [x] 1.3 Sumar `'algebra'` a `TopicId` en `types.ts`.
+- [x] 1.4 Crear `algebra/index.ts` con el objeto `Topic` y registrarlo en `topics/index.ts`. Verificar que `registry.test.ts` sigue verde con el tema vacío antes de agregar generadores.
 
 ## 2. Secuencias numéricas
 
@@ -15,14 +15,14 @@
 
 - [x] 2.1 Escribir las pruebas de `secuencia.ts`: términos de una secuencia aditiva y de una multiplicativa, término lejano sin enumerar, y que un paso negativo o una división produzcan enteros (nada de decimales sueltos en una unidad que aún no los mezcla).
 - [x] 2.2 Implementar `secuencia.ts` con la secuencia como dato (`inicio`, `paso`, `operacion`).
-- [ ] 2.3 Escribir las pruebas del generador **patrón de formación**: la respuesta correcta describe el patrón real y los distractores son patrones plausibles sobre el mismo número, no valores al azar.
-- [ ] 2.4 Implementar el generador de patrón de formación.
-- [ ] 2.5 Escribir las pruebas del generador **completar secuencia**, cubriendo el término faltante al final y en medio.
-- [ ] 2.6 Implementar el generador de completar secuencia.
-- [ ] 2.7 Escribir las pruebas del generador **término lejano**: la posición pedida SHALL estar lo bastante lejos como para no resolverse contando, y el enunciado nombra la posición en ordinal.
-- [ ] 2.8 Implementar el generador de término lejano, con la pista explicando el atajo.
-- [ ] 2.9 Escribir las pruebas del generador **construir la secuencia** a partir de primer término más patrón descrito.
-- [ ] 2.10 Implementar el generador de construir la secuencia.
+- [x] 2.3 Escribir las pruebas del generador **patrón de formación**: la respuesta correcta describe el patrón real y los distractores son patrones plausibles sobre el mismo número, no valores al azar.
+- [x] 2.4 Implementar el generador de patrón de formación.
+- [x] 2.5 Escribir las pruebas del generador **completar secuencia**, cubriendo el término faltante al final y en medio.
+- [x] 2.6 Implementar el generador de completar secuencia.
+- [x] 2.7 Escribir las pruebas del generador **término lejano**: la posición pedida SHALL estar lo bastante lejos como para no resolverse contando, y el enunciado nombra la posición en ordinal.
+- [x] 2.8 Implementar el generador de término lejano, con la pista explicando el atajo.
+- [x] 2.9 Escribir las pruebas del generador **construir la secuencia** a partir de primer término más patrón descrito.
+- [x] 2.10 Implementar el generador de construir la secuencia.
 
 ## 3. Lenguaje algebraico y valorizar
 
@@ -44,10 +44,10 @@
 **Files:** Create: `src/lib/topics/algebra/Render.tsx`, `src/lib/topics/algebra/Render.css`, `src/lib/topics/algebra/text.ts` · Modify: `src/components/TopicSelector.tsx` si hiciera falta
 **Interfaces:** `Render(props: ExerciseRenderProps)` · `describe(e: Exercise): string` · `hint(e: Exercise): string`
 
-- [ ] 4.1 Escribir `text.ts` con los enunciados y pistas en español, siguiendo la redacción del libro. Va aparte del `Render` para no romper fast refresh, igual que en fracciones y decimales.
+- [x] 4.1 Escribir `text.ts` con los enunciados y pistas en español, siguiendo la redacción del libro. Va aparte del `Render` para no romper fast refresh, igual que en fracciones y decimales.
 - [ ] 4.2 Implementar la **tira de secuencia**: términos en fila con el `?` amarillo en el término preguntado, envolviendo en vez de hacer scroll horizontal, y `…` antes de la pregunta cuando el término pedido es lejano.
 - [ ] 4.3 Implementar la **tarjeta de expresión**, con la sustitución de variables encima y números tabulares.
-- [ ] 4.4 Escribir `Render.css` siguiendo BPL DS como en `TopicSelector.css` —tokens nombrados por la propiedad, resolutores privados con `--_`—. **Sin Tailwind nuevo.**
+- [x] 4.4 Escribir `Render.css` siguiendo BPL DS como en `TopicSelector.css` —tokens nombrados por la propiedad, resolutores privados con `--_`—. **Sin Tailwind nuevo.**
 - [ ] 4.5 Verificar que el chip de álgebra aparece en el selector y que la selección persiste entre recargas.
 - [ ] 4.6 Verificación visual con la skill `run`: jugar una partida solo de álgebra en el navegador y revisar los tres formatos —tira, tira con `…`, tarjeta— en ancho de teléfono y de escritorio. Confirmar que ninguna expresión muestra `×` ni `*`.
 
@@ -55,8 +55,8 @@
 
 **Files:** Modify: `src/lib/topicSelection.ts`, `src/lib/topicSelection.test.ts`, `worker/index.ts`, `worker/index.test.ts`
 
-- [ ] 5.1 Escribir las pruebas: `topicCategory(['algebra'])` es `'algebra'`; combinada con cualquier otro tema es `'mixto'`; y `readTopicCategory('algebra')` en el Worker devuelve `'algebra'` en vez de caer a `'fracciones'`.
-- [ ] 5.2 Sumar `'algebra'` a `TopicCategory` en el cliente y a `TOPIC_CATEGORIES` en el Worker.
+- [x] 5.1 Escribir las pruebas: `topicCategory(['algebra'])` es `'algebra'`; combinada con cualquier otro tema es `'mixto'`; y `readTopicCategory('algebra')` en el Worker devuelve `'algebra'` en vez de caer a `'fracciones'`.
+- [x] 5.2 Sumar `'algebra'` a `TopicCategory` en el cliente y a `TOPIC_CATEGORIES` en el Worker.
 - [ ] 5.3 Comprobar contra el Worker corriendo que una partida de álgebra queda en su tabla y no aparece en las otras tres.
 
 ## 6. Tips del tema

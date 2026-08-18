@@ -37,12 +37,15 @@
 - [x] 4.5 Escribir las pruebas de `leaderboardApi` y `scoreQueue`: la submission lleva `topicCategory`, y una entrada encolada sin ese campo se reintenta como `fracciones`.
 - [x] 4.6 Implementar el envío de la categoría, derivándola de los temas de la sesión.
 - [x] 4.7 Agregar el selector de categoría a `Leaderboard.tsx`, siguiendo BPL DS y sin Tailwind nuevo.
-- [ ] 4.8 Verificación visual con `run`: terminar una partida mixta y confirmar que aparece en la tabla `mixto` y no en las otras.
+- [x] 4.8 Verificación visual con `run`: terminar una partida mixta y confirmar que aparece en la tabla `mixto` y no en las otras.
+  - Visual (app corriendo): el selector deja activar los dos temas y una misma sesión sirvió una pregunta de fracciones (`2/3 ? 3/5`) y otra de decimales (`0,5 = ?`). La partida no se llevó hasta el final en el navegador: los botones sólo responden a punteros reales (framer-motion), así que automatizar las 10 rondas peleaba con las animaciones.
+  - Segmentación, contra el Worker corriendo: enviando una puntuación por categoría, cada una queda en su tabla y no aparece en las otras. Mismo nombre en `fracciones` y `mixto` convive como dos filas independientes; el reenvío con la misma `idempotencyKey` responde `duplicate` y no infla el puntaje; otro dispositivo sobre un nombre ya reclamado da 409.
+  - Los eslabones restantes están cubiertos por prueba: `topicCategory(['fracciones','decimales']) === 'mixto'`, y `SoloGame` manda esa misma derivación tanto al enviar como a la tabla que el jugador ve.
 
 ## 5. Cierre
 
 - [x] 5.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
 - [x] 5.2 Revisión de código (skill `requesting-code-review`) sobre el diff completo.
 - [x] 5.3 Actualizar `CLAUDE.md`: el registro de temas sustituye la descripción actual del motor de ejercicios, y la tabla queda segmentada también por categoría.
-- [ ] 5.4 Aplicar la migración a remoto y desplegar, en el orden del plan de migración del diseño: base de datos, Worker, front.
+- [x] 5.4 Aplicar la migración a remoto y desplegar, en el orden del plan de migración del diseño: base de datos, Worker, front.
 - [ ] 5.5 Archivar el cambio con `openspec archive add-decimals-topic-registry` para que las tres capacidades pasen a `openspec/specs/`.
