@@ -1,0 +1,78 @@
+## 1. Andamiaje del tema y notación
+
+**Files:** Create: `src/lib/topics/algebra/expresion.ts`, `src/lib/topics/algebra/expresion.test.ts`, `src/lib/topics/algebra/index.ts` · Modify: `src/lib/topics/types.ts`, `src/lib/topics/index.ts`
+**Interfaces:** `termino(coeficiente: number, variable: string): string` · `producto(...factores: string[]): string` · `formatear(expr: Expr): string`
+
+- [ ] 1.1 Escribir las pruebas de `expresion.ts` contra los ejemplos textuales del libro: `3x + 9`, `9b`, `a + 12b`, `9c + 3a`, `a · b`, `x · x`, `4 · s`, y el caso mixto `9b + a · b`. Incluir una prueba que falle si aparece `×` o `*`.
+- [ ] 1.2 Implementar `expresion.ts` con la regla mixta: coeficiente junto a variable se yuxtapone; factores sueltos van con punto medio. Coeficiente 1 se omite (`x`, no `1x`).
+- [ ] 1.3 Sumar `'algebra'` a `TopicId` en `types.ts`.
+- [ ] 1.4 Crear `algebra/index.ts` con el objeto `Topic` y registrarlo en `topics/index.ts`. Verificar que `registry.test.ts` sigue verde con el tema vacío antes de agregar generadores.
+
+## 2. Secuencias numéricas
+
+**Files:** Create: `src/lib/topics/algebra/secuencia.ts`, `src/lib/topics/algebra/secuencia.test.ts` · Modify: `src/lib/topics/algebra/generators.ts`, `src/lib/topics/algebra/generators.test.ts`
+**Interfaces:** `terminos(sec: Secuencia, cantidad: number): number[]` · `termino(sec: Secuencia, posicion: number): number` · `describirPatron(sec: Secuencia): string`
+
+- [ ] 2.1 Escribir las pruebas de `secuencia.ts`: términos de una secuencia aditiva y de una multiplicativa, término lejano sin enumerar, y que un paso negativo o una división produzcan enteros (nada de decimales sueltos en una unidad que aún no los mezcla).
+- [ ] 2.2 Implementar `secuencia.ts` con la secuencia como dato (`inicio`, `paso`, `operacion`).
+- [ ] 2.3 Escribir las pruebas del generador **patrón de formación**: la respuesta correcta describe el patrón real y los distractores son patrones plausibles sobre el mismo número, no valores al azar.
+- [ ] 2.4 Implementar el generador de patrón de formación.
+- [ ] 2.5 Escribir las pruebas del generador **completar secuencia**, cubriendo el término faltante al final y en medio.
+- [ ] 2.6 Implementar el generador de completar secuencia.
+- [ ] 2.7 Escribir las pruebas del generador **término lejano**: la posición pedida SHALL estar lo bastante lejos como para no resolverse contando, y el enunciado nombra la posición en ordinal.
+- [ ] 2.8 Implementar el generador de término lejano, con la pista explicando el atajo.
+- [ ] 2.9 Escribir las pruebas del generador **construir la secuencia** a partir de primer término más patrón descrito.
+- [ ] 2.10 Implementar el generador de construir la secuencia.
+
+## 3. Lenguaje algebraico y valorizar
+
+**Files:** Modify: `src/lib/topics/algebra/generators.ts`, `src/lib/topics/algebra/generators.test.ts` · Create: `src/lib/topics/algebra/frases.ts`, `src/lib/topics/algebra/frases.test.ts`
+**Interfaces:** `frase(expr: Expr): string` · `evaluar(expr: Expr, valores: Record<string, number>): number`
+
+- [ ] 3.1 Escribir las pruebas de `frases.ts` con las redacciones textuales del libro: doble, triple, mitad, tercera parte, cuarta parte, suma, diferencia, sucesor, antecesor, aumentado en, disminuido en.
+- [ ] 3.2 Implementar `frases.ts`, reutilizando `expresion.ts` para el lado algebraico.
+- [ ] 3.3 Escribir las pruebas del generador **de la frase a la expresión**, con distractores que confundan operación (doble por triple, sumar por restar).
+- [ ] 3.4 Implementar ese generador.
+- [ ] 3.5 Escribir las pruebas del generador **de la expresión a la frase**.
+- [ ] 3.6 Implementar ese generador.
+- [ ] 3.7 Escribir las pruebas de `evaluar` y del generador **valorizar**: una y dos variables, y un distractor por orden de operaciones. Incluir la prueba de que **ninguna opción se repite** cuando el distractor por precedencia coincide con la respuesta.
+- [ ] 3.8 Implementar `evaluar` y el generador de valorizar.
+- [ ] 3.9 Comprobar que las letras rotan y no siempre sale `x`.
+
+## 4. Presentación
+
+**Files:** Create: `src/lib/topics/algebra/Render.tsx`, `src/lib/topics/algebra/Render.css`, `src/lib/topics/algebra/text.ts` · Modify: `src/components/TopicSelector.tsx` si hiciera falta
+**Interfaces:** `Render(props: ExerciseRenderProps)` · `describe(e: Exercise): string` · `hint(e: Exercise): string`
+
+- [ ] 4.1 Escribir `text.ts` con los enunciados y pistas en español, siguiendo la redacción del libro. Va aparte del `Render` para no romper fast refresh, igual que en fracciones y decimales.
+- [ ] 4.2 Implementar la **tira de secuencia**: términos en fila con el `?` amarillo en el término preguntado, envolviendo en vez de hacer scroll horizontal, y `…` antes de la pregunta cuando el término pedido es lejano.
+- [ ] 4.3 Implementar la **tarjeta de expresión**, con la sustitución de variables encima y números tabulares.
+- [ ] 4.4 Escribir `Render.css` siguiendo BPL DS como en `TopicSelector.css` —tokens nombrados por la propiedad, resolutores privados con `--_`—. **Sin Tailwind nuevo.**
+- [ ] 4.5 Verificar que el chip de álgebra aparece en el selector y que la selección persiste entre recargas.
+- [ ] 4.6 Verificación visual con la skill `run`: jugar una partida solo de álgebra en el navegador y revisar los tres formatos —tira, tira con `…`, tarjeta— en ancho de teléfono y de escritorio. Confirmar que ninguna expresión muestra `×` ni `*`.
+
+## 5. Categoría de tabla de posiciones
+
+**Files:** Modify: `src/lib/topicSelection.ts`, `src/lib/topicSelection.test.ts`, `worker/index.ts`, `worker/index.test.ts`
+
+- [ ] 5.1 Escribir las pruebas: `topicCategory(['algebra'])` es `'algebra'`; combinada con cualquier otro tema es `'mixto'`; y `readTopicCategory('algebra')` en el Worker devuelve `'algebra'` en vez de caer a `'fracciones'`.
+- [ ] 5.2 Sumar `'algebra'` a `TopicCategory` en el cliente y a `TOPIC_CATEGORIES` en el Worker.
+- [ ] 5.3 Comprobar contra el Worker corriendo que una partida de álgebra queda en su tabla y no aparece en las otras tres.
+
+## 6. Tips del tema
+
+**Files:** Modify: `src/lib/topics/types.ts`, `src/lib/topics/algebra/index.ts`
+**Interfaces:** `tips: Tip[]` en el objeto `Topic`
+
+- [ ] 6.1 Agregar el campo `tips` al contrato `Topic`, opcional, para que los temas existentes sigan válidos sin cambios.
+- [ ] 6.2 Escribir los tips de álgebra en español, cortos y accionables, apuntando a las confusiones reales: la letra no es parte de la operación, `3x` es multiplicación aunque no lleve signo, y cómo llegar a un término lejano sin contar.
+- [ ] 6.3 Dejar dicho en los tips qué cubre el tema hoy y que ecuaciones e inecuaciones llegan aparte, para que no se lea como que la unidad está completa.
+
+## 7. Cierre
+
+- [ ] 7.1 Verificación con evidencia (skill `verification-before-completion`): `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
+- [ ] 7.2 Revisión de código (skill `requesting-code-review`) sobre el diff completo.
+- [ ] 7.3 Actualizar `CLAUDE.md`: el registro pasa a tener tres temas y la tabla de posiciones cuatro categorías.
+- [ ] 7.4 Desplegar **primero el Worker y después el front**, en ese orden, para que ninguna partida de álgebra se archive con la categoría equivocada.
+- [ ] 7.5 Anotar en `openspec/roadmap.md` lo que queda fuera: ecuaciones e inecuaciones con balanza, secuencias de figuras, y la pantalla Aprende.
+- [ ] 7.6 `openspec validate add-tema-algebra` y luego `openspec archive add-tema-algebra`.
