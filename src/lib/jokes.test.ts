@@ -45,3 +45,24 @@ describe('getRandomJoke', () => {
     expect(vistos.size).toBeGreaterThan(jokes.length * 0.8)
   })
 })
+
+describe('los chistes en inglés', () => {
+  const ingleses = jokes.filter(j => /^(Why|What|How|Where)\b/.test(j.setup))
+
+  it('hay unos cuantos, no uno suelto perdido entre cincuenta', () => {
+    // Uno solo se leería como un error de traducción; un grupo se lee como lo
+    // que es, una decisión.
+    expect(ingleses.length).toBeGreaterThanOrEqual(10)
+  })
+
+  it('no llevan signos de apertura españoles', () => {
+    for (const joke of ingleses) {
+      expect(joke.setup).not.toContain('¿')
+      expect(joke.punchline).not.toContain('¡')
+    }
+  })
+
+  it('son minoría: el juego sigue siendo en español', () => {
+    expect(ingleses.length).toBeLessThan(jokes.length / 2)
+  })
+})

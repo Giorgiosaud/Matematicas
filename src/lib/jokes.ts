@@ -56,6 +56,27 @@ export const jokes = [
   { setup: '¿Cuál es el último animal del mundo?', punchline: 'El del-fín.' },
   { setup: '¿Qué le dijo un gusano a otro gusano?', punchline: 'Voy a dar una vuelta a la manzana.' },
   { setup: '¿Cuál es el colmo de un electricista?', punchline: 'Que su mujer se llame Luz y lo tenga siempre en corriente.' },
+
+  // En inglés a propósito, y sin traducir: son juegos de palabras que sólo
+  // funcionan en su idioma. «7 8 9» suena a «seven ate nine», y «square roots»
+  // son raíces cuadradas y raíces de planta a la vez. Traducirlos los mata, que
+  // es exactamente lo que le pasó a la versión española del 6 y el 7 antes de
+  // sacarla. Es la única parte del juego que no va en español, y va aquí porque
+  // los niños que lo juegan son bilingües.
+  { setup: 'Why was 6 afraid of 7?', punchline: 'Because 7 8 9.' },
+  { setup: 'Why do plants hate math?', punchline: 'Because it gives them square roots.' },
+  { setup: 'Why was the equal sign so humble?', punchline: 'Because it knew it was never greater than anyone else.' },
+  { setup: 'Why did the two 4s skip lunch?', punchline: 'Because they already 8.' },
+  { setup: 'Why is the obtuse triangle always upset?', punchline: 'Because it is never right.' },
+  { setup: 'What did the triangle say to the circle?', punchline: 'You are pointless.' },
+  { setup: 'What do you call friends who love math?', punchline: 'Algebros.' },
+  { setup: 'What is a math teacher\'s favourite place in New York?', punchline: 'Times Square.' },
+  { setup: 'What do you call a bear with no teeth?', punchline: 'A gummy bear.' },
+  { setup: 'Why don\'t eggs tell jokes?', punchline: 'They would crack each other up.' },
+  { setup: 'What do you call cheese that is not yours?', punchline: 'Nacho cheese.' },
+  { setup: 'Why did the scarecrow win an award?', punchline: 'Because he was outstanding in his field.' },
+  { setup: 'What is orange and sounds like a parrot?', punchline: 'A carrot.' },
+  { setup: 'What do you call a fish with no eyes?', punchline: 'Fsh.' },
 ]
 
 let lastIndex = -1
