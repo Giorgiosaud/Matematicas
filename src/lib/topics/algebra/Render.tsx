@@ -1,4 +1,5 @@
 import type { ExerciseRenderProps } from '../types'
+import { Balanza } from './Balanza'
 import { algebraPayload } from './generators'
 import { listarValores } from './text'
 import './Render.css'
@@ -28,12 +29,28 @@ function Tira({ terminos, oculto, conPuntos }: { terminos: number[]; oculto?: nu
   )
 }
 
-export function Render({ exercise }: ExerciseRenderProps) {
-  const { mostrados, posicionOculta, posicionPedida, prompt, expresion, valores } = algebraPayload(exercise)
+export function Render({ exercise, selectedOption }: ExerciseRenderProps) {
+  const { mostrados, posicionOculta, posicionPedida, prompt, expresion, valores, balanza } = algebraPayload(exercise)
+
+  // La balanza vive en su propio componente y no dentro de este `switch`: el
+  // tema ya tiene cuatro formas de presentación y dejarla crecer aquí es como
+  // este archivo se vuelve el que nadie quiere tocar.
+  if (balanza) {
+    return (
+      <Marco>
+        <Balanza datos={balanza} respondida={selectedOption !== null} />
+      </Marco>
+    )
+  }
 
   // La frase se lee, no se calcula: va como enunciado y la expresión aparece
   // en las opciones.
-  if (exercise.type === 'construir' || exercise.type === 'frase-a-expresion') {
+  if (
+    exercise.type === 'construir'
+    || exercise.type === 'frase-a-expresion'
+    || exercise.type === 'ecuacion-desde-frase'
+    || exercise.type === 'desigualdad'
+  ) {
     return <Marco><p className="algebra__enunciado">{prompt}</p></Marco>
   }
 

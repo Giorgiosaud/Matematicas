@@ -1,12 +1,16 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { DEFAULT_TOPICS } from './topics'
 import { loadTopics, saveTopics, topicCategory } from './topicSelection'
 
 beforeEach(() => localStorage.clear())
 afterEach(() => vi.restoreAllMocks())
 
 describe('loadTopics', () => {
-  it('arranca en fracciones en un dispositivo nuevo', () => {
-    expect(loadTopics()).toEqual(['fracciones'])
+  it('arranca con todos los temas marcados en un dispositivo nuevo', () => {
+    // Con tres temas registrados, empezar solo en fracciones dejaría fuera por
+    // defecto justo lo que el niño está estudiando.
+    expect(loadTopics()).toEqual([...DEFAULT_TOPICS])
+    expect(loadTopics().length).toBeGreaterThan(1)
   })
 
   it('recuerda la selección de la sesión anterior', () => {
@@ -19,19 +23,19 @@ describe('loadTopics', () => {
     expect(loadTopics()).toEqual(['decimales'])
   })
 
-  it('vuelve a fracciones si no queda ningún tema válido', () => {
+  it('vuelve a la selección por defecto si no queda ningún tema válido', () => {
     localStorage.setItem('fracciones:topics', JSON.stringify(['geometria']))
-    expect(loadTopics()).toEqual(['fracciones'])
+    expect(loadTopics()).toEqual([...DEFAULT_TOPICS])
   })
 
   it('tolera contenido corrupto', () => {
     localStorage.setItem('fracciones:topics', 'no es json')
-    expect(loadTopics()).toEqual(['fracciones'])
+    expect(loadTopics()).toEqual([...DEFAULT_TOPICS])
   })
 
   it('tolera que el almacenamiento no esté disponible', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('bloqueado') })
-    expect(loadTopics()).toEqual(['fracciones'])
+    expect(loadTopics()).toEqual([...DEFAULT_TOPICS])
   })
 })
 

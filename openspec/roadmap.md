@@ -7,10 +7,13 @@ Lo que ya está decidido vive en `openspec/changes/<nombre>/`, no aquí.
 
 ## Contenido — antes de la prueba del 3 de septiembre de 2026
 
-- **Ecuaciones e inecuaciones (Unidad 4).** El libro las presenta con balanzas de
-  pesas y son ~8 de las 18 preguntas de la evaluación final de la unidad. Es el
-  hueco más grande que queda. Sale de `add-tema-algebra`, que las dejó fuera a
-  propósito porque el dibujo de la balanza es trabajo de otra naturaleza.
+- **Problemas con enunciado, como tema propio.** Es lo que más se les complica,
+  y el motivo no es la aritmética: el enunciado **no dice qué técnica usar**, y
+  puede ser una fracción, un decimal, una ecuación o una inecuación. Por eso no
+  puede vivir dentro de cada tema —marcar «decimales» ya revelaría la mitad de
+  la respuesta— sino como un tema transversal donde el niño tiene que decidir.
+  Contextos escritos a mano y números sorteados en cada aparición: un catálogo
+  fijo se memoriza. Sale de la conversación del 18-ago-2026.
 - **Huecos de decimales contra la Unidad 3.** Faltan componer y descomponer con
   la notación de letras del libro, sumar y restar, división con cociente
   decimal, ordenar tres o más números, densidad («escribe un número entre 0,43 y

@@ -21,7 +21,9 @@ interface Props {
 
 type Phase = 'waiting' | 'locked'
 
-const newExercise = (r: number, topics: TopicId[]) => generateExercise(Math.ceil(r / 3), topics)
+// `r` es el número de pregunta; la dificultad sube cada tres. El índice se
+// pasa aparte para que los temas se repartan por turnos y no por sorteo.
+const newExercise = (r: number, topics: TopicId[]) => generateExercise(Math.ceil(r / 3), topics, r - 1)
 
 const MAX_HP = 100
 const DAMAGE = 25
@@ -39,7 +41,7 @@ export default function Game({ config, onGameEnd }: Props) {
   const [hp, setHp] = useState<Record<PlayerKey, number>>({ q: MAX_HP, p: MAX_HP })
   const [streak, setStreak] = useState<Record<PlayerKey, number>>({ q: 0, p: 0 })
   const [round, setRound] = useState(1)
-  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1, config.topics))
+  const [exercise, setExercise] = useState<Exercise>(() => generateExercise(1, config.topics, 0))
   const [phase, setPhase] = useState<Phase>('waiting')
   const [lockedPlayer, setLockedPlayer] = useState<PlayerKey | null>(null)
   const [secondChance, setSecondChance] = useState(false)
@@ -518,7 +520,7 @@ export default function Game({ config, onGameEnd }: Props) {
               className="rounded-3xl px-5 sm:px-7 md:px-10 py-4 sm:py-5 md:py-6 short-screen-card"
               style={{ background: 'var(--surface)', border: '3px solid #000', boxShadow: '6px 6px 0 #000' }}
             >
-              <ExerciseStatement exercise={exercise} selectedOption={exercise.type === 'compare' || exercise.type === 'comparar' ? selectedOption : null} />
+              <ExerciseStatement exercise={exercise} selectedOption={selectedOption} />
             </div>
             <div className="short-screen-hide">
               <ExerciseVisual exercise={exercise} color="#FFD700" />

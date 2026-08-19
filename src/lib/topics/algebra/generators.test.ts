@@ -231,3 +231,140 @@ describe('propiedades de todos los generadores', () => {
     }), { numRuns: 500 })
   })
 })
+
+// ── Ecuaciones, desigualdades e inecuaciones ─────────────────────────────────
+
+function numerosDe(texto: string): number[] {
+  return (texto.match(/\d+/g) ?? []).map(Number)
+}
+
+describe('ecuacion-balanza', () => {
+  const ejercicios = muestrear('ecuacion-balanza')
+
+  it('la balanza está en equilibrio', () => {
+    for (const ex of ejercicios) {
+      expect(algebraPayload(ex).balanza!.estado).toBe('equilibrio')
+    }
+  })
+
+  it('todas las opciones usan solo números que están en el dibujo', () => {
+    // Una opción con un número que no aparece se descarta sin pensar, y la
+    // pregunta se resuelve por eliminación en vez de por comprensión.
+    for (const ex of ejercicios) {
+      const { balanza } = algebraPayload(ex)
+      const enDibujo = new Set(
+        [...balanza!.izquierda, ...balanza!.derecha]
+          .map(p => p.gramos)
+          .filter((g): g is number => g !== undefined),
+      )
+      for (const opcion of ex.options) {
+        for (const n of numerosDe(opcion)) expect(enDibujo.has(n)).toBe(true)
+      }
+    }
+  })
+
+  it('un platillo lleva la incógnita y el otro no', () => {
+    for (const ex of ejercicios) {
+      const { balanza } = algebraPayload(ex)
+      const conIncognita = [balanza!.izquierda, balanza!.derecha]
+        .filter(lado => lado.some(p => p.incognita !== undefined))
+      expect(conIncognita).toHaveLength(1)
+    }
+  })
+})
+
+describe('resolver-ecuacion', () => {
+  const ejercicios = muestrear('resolver-ecuacion')
+
+  it('la solución es un entero no negativo', () => {
+    for (const ex of ejercicios) {
+      const valor = Number(ex.answer)
+      expect(Number.isInteger(valor)).toBe(true)
+      expect(valor).toBeGreaterThanOrEqual(0)
+    }
+  })
+
+  it('la incógnita cae a veces a la izquierda y a veces a la derecha', () => {
+    // El libro escribe `25 = x − 56`; quien solo practicó una forma lee la otra
+    // como una errata.
+    const derecha = ejercicios.filter(ex => /^\d+ =/.test(algebraPayload(ex).expresion!))
+    expect(derecha.length).toBeGreaterThan(0)
+    expect(derecha.length).toBeLessThan(ejercicios.length)
+  })
+})
+
+describe('inecuacion-balanza', () => {
+  const ejercicios = muestrear('inecuacion-balanza')
+
+  it('la balanza siempre está inclinada, nunca en equilibrio', () => {
+    for (const ex of ejercicios) {
+      expect(algebraPayload(ex).balanza!.estado).not.toBe('equilibrio')
+    }
+  })
+
+  it('el signo de la respuesta concuerda con el platillo que baja', () => {
+    for (const ex of ejercicios) {
+      const { balanza } = algebraPayload(ex)
+      // El lado con la incógnita es el izquierdo; si baja el derecho, pesa menos.
+      const esperado = balanza!.estado === 'baja-derecha' ? '<' : '>'
+      expect(ex.answer).toContain(esperado)
+    }
+  })
+})
+
+describe('menor-natural', () => {
+  const ejercicios = muestrear('menor-natural')
+
+  it('la respuesta es un natural mayor que cero', () => {
+    for (const ex of ejercicios) {
+      expect(Number(ex.answer)).toBeGreaterThan(0)
+    }
+  })
+
+  it('el valor anterior está entre las opciones', () => {
+    // Quien contesta el anterior entendió la ecuación pero no la desigualdad,
+    // y esa confusión es justo lo que la pregunta busca.
+    for (const ex of ejercicios) {
+      expect(ex.options).toContain(String(Number(ex.answer) - 1))
+    }
+  })
+})
+
+describe('no-satisface', () => {
+  const ejercicios = muestrear('no-satisface')
+
+  it('exactamente una opción incumple la inecuación', () => {
+    for (const ex of ejercicios) {
+      const limite = Number(algebraPayload(ex).expresion!.match(/< (\d+)/)![1])
+      const fallan = ex.options.filter(o => Number(o) >= limite)
+      expect(fallan).toHaveLength(1)
+      expect(fallan[0]).toBe(ex.answer)
+    }
+  })
+
+  it('todas las opciones son números distintos', () => {
+    for (const ex of ejercicios) {
+      expect(new Set(ex.options).size).toBe(ex.options.length)
+      for (const o of ex.options) expect(Number.isNaN(Number(o))).toBe(false)
+    }
+  })
+})
+
+describe('desigualdad', () => {
+  const ejercicios = muestrear('desigualdad')
+
+  it('solo ofrece los tres signos', () => {
+    for (const ex of ejercicios) {
+      expect(new Set(ex.options)).toEqual(new Set(['<', '>', '=']))
+    }
+  })
+
+  it('el signo responde a la comparación real de las dos sumas', () => {
+    for (const ex of ejercicios) {
+      const [izq, der] = algebraPayload(ex).prompt!.split('?').map(numerosDe)
+      const a = izq.reduce((x, y) => x + y, 0)
+      const b = der.reduce((x, y) => x + y, 0)
+      expect(ex.answer).toBe(a === b ? '=' : a > b ? '>' : '<')
+    }
+  })
+})

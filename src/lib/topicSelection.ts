@@ -1,4 +1,4 @@
-import { DEFAULT_TOPIC, isTopicId } from './topics'
+import { DEFAULT_TOPIC, DEFAULT_TOPICS, isTopicId } from './topics'
 import type { TopicId } from './topics/types'
 
 const KEY = 'fracciones:topics'
@@ -11,12 +11,12 @@ export type TopicCategory = 'fracciones' | 'decimales' | 'algebra' | 'mixto'
 export function loadTopics(): TopicId[] {
   try {
     const raw = localStorage.getItem(KEY)
-    if (!raw) return [DEFAULT_TOPIC]
+    if (!raw) return [...DEFAULT_TOPICS]
     const parsed: unknown = JSON.parse(raw)
     const valid = Array.isArray(parsed) ? parsed.filter(isTopicId) : []
-    return valid.length > 0 ? valid : [DEFAULT_TOPIC]
+    return valid.length > 0 ? valid : [...DEFAULT_TOPICS]
   } catch {
-    return [DEFAULT_TOPIC]
+    return [...DEFAULT_TOPICS]
   }
 }
 

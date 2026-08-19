@@ -1,0 +1,169 @@
+/* La balanza de las páginas 80 a 87: dos platillos **encima** del travesaño,
+   apoyado en un fulcro triangular, con el fiel marcando la inclinación. Es la
+   forma que el niño tiene delante en la ficha.
+
+   El estado —equilibrio o inclinación— se dibuja con geometría y no con texto:
+   escribir «este lado pesa más» junto al dibujo convertiría una pregunta de
+   interpretación en una de lectura, y leer la balanza es justo lo que el libro
+   evalúa. */
+
+.balanza {
+  --balanza-ancho: min(22rem, 88vw);
+  --brazo-alto: 8.5rem;
+  --travesano-alto: 0.45rem;
+  --travesano-color: #ffd700;
+  --plato-alto: 0.3rem;
+  --plato-color: rgb(255 255 255 / 0.8);
+  --pesa-background: #1e2536;
+  --pesa-border-color: rgb(255 255 255 / 0.35);
+  --pesa-color: #fff;
+  --pesa-font-size: clamp(0.8rem, 3vw, 1.05rem);
+  --taco-background: rgb(255 255 255 / 0.22);
+  --fulcro-color: #ffd700;
+  --fiel-color: #fff;
+
+  /* El giro y el desnivel van juntos: si uno dice que baja la derecha y el otro
+     que sube, el travesaño cruza los platillos en diagonal. */
+  --giro: 0deg;
+  --baja-izquierda: 0px;
+  --baja-derecha: 0px;
+  --fiel-giro: 0deg;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--balanza-ancho);
+  margin-inline: auto;
+}
+
+/* Giro horario = extremo derecho abajo. */
+.balanza--baja-derecha { --giro: 8deg; --baja-derecha: 22px; --baja-izquierda: -22px; --fiel-giro: 20deg; }
+.balanza--baja-izquierda { --giro: -8deg; --baja-izquierda: 22px; --baja-derecha: -22px; --fiel-giro: -20deg; }
+
+.balanza__brazos {
+  position: relative;
+  width: 100%;
+  height: var(--brazo-alto);
+}
+
+.balanza__travesano {
+  position: absolute;
+  inset-inline: 3%;
+  bottom: 0;
+  height: var(--travesano-alto);
+  border-radius: 999px;
+  background: var(--travesano-color);
+  transform: rotate(var(--giro));
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Cada platillo se apoya sobre su extremo del travesaño, con las pesas encima. */
+.balanza__lado {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 42%;
+  height: var(--brazo-alto);
+  transform: translateY(var(--_baja));
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.balanza__lado--izquierda { left: 3%; --_baja: var(--baja-izquierda); }
+.balanza__lado--derecha { right: 3%; --_baja: var(--baja-derecha); }
+
+.balanza__pesas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.balanza__pesa {
+  min-width: 2.1rem;
+  padding: 0.28rem 0.4rem;
+  border: 2px solid var(--pesa-border-color);
+  border-radius: 0.3rem 0.3rem 0.15rem 0.15rem;
+  background: var(--pesa-background);
+  color: var(--pesa-color);
+  font-size: var(--pesa-font-size);
+  font-weight: 900;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.balanza__pesa--incognita {
+  --pesa-border-color: #ffd700;
+  --pesa-color: #ffd700;
+}
+
+.balanza__plato {
+  width: 100%;
+  height: var(--plato-alto);
+  border-radius: 999px;
+  background: var(--plato-color);
+}
+
+/* Fulcro: el triángulo sobre el que se apoya el travesaño, y el fiel que se
+   inclina con él. */
+.balanza__fulcro {
+  position: relative;
+  width: 0;
+  height: 0;
+  border-inline: 0.9rem solid transparent;
+  border-bottom: 1.5rem solid var(--fulcro-color);
+}
+
+.balanza__fiel {
+  position: absolute;
+  bottom: 0.1rem;
+  left: 50%;
+  width: 2px;
+  height: 1.1rem;
+  background: var(--fiel-color);
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(var(--fiel-giro));
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.balanza__base {
+  width: 45%;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--fulcro-color);
+}
+
+/* Tacos: la balanza descansa sobre ellos hasta que el jugador responde. Van
+   justo debajo de cada platillo, no al pie de la columna, o se leen como dos
+   cuadrados sueltos en vez de como lo que sostiene el plato. */
+.balanza__taco {
+  position: absolute;
+  bottom: -1rem;
+  width: 2.6rem;
+  height: 1.1rem;
+  border-radius: 0.15rem;
+  background: var(--taco-background);
+  border: 2px solid rgb(255 255 255 / 0.3);
+  transition: transform 320ms ease-in, opacity 320ms ease-in;
+}
+
+.balanza__taco--izquierda { left: 12%; }
+.balanza__taco--derecha { right: 12%; }
+
+.balanza__taco--fuera { opacity: 0; }
+.balanza__taco--izquierda.balanza__taco--fuera { transform: translate(-160%, 60%) rotate(-35deg); }
+.balanza__taco--derecha.balanza__taco--fuera { transform: translate(160%, 60%) rotate(35deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .balanza__travesano,
+  .balanza__lado,
+  .balanza__fiel,
+  .balanza__taco {
+    transition: none;
+  }
+}
