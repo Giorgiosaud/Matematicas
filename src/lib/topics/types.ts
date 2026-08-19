@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 
-export type TopicId = 'fracciones' | 'decimales' | 'algebra'
+export type TopicId = 'fracciones' | 'decimales' | 'algebra' | 'problemas'
 
 // Lo único que el juego consume de un ejercicio. Los datos propios de cada tema
 // viven en `payload`, y solo el tema que lo produjo sabe qué hay dentro — así

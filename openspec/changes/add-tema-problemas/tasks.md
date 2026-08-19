@@ -16,27 +16,27 @@
 
 **Files:** Create: `src/lib/topics/problemas/generators.ts`, `generators.test.ts`
 
-- [ ] 2.1 Pruebas y generador **resultado**: opciones con la misma unidad, y todas obtenidas operando con los números del enunciado.
-- [ ] 2.2 Pruebas y generador **que-operacion**: las opciones son operaciones planteadas con los números del enunciado y solo una corresponde.
-- [ ] 2.3 Comprobar que dos apariciones del mismo contexto dan números y respuesta distintos.
-- [ ] 2.4 Descartar los sorteos que vuelven trivial el problema (una resta que da cero, una fracción que se simplifica sola).
+- [x] 2.1 Pruebas y generador **resultado**: opciones con la misma unidad, y todas obtenidas operando con los números del enunciado.
+- [x] 2.2 Pruebas y generador **que-operacion**: las opciones son operaciones planteadas con los números del enunciado y solo una corresponde.
+- [x] 2.3 Comprobar que dos apariciones del mismo contexto dan números y respuesta distintos.
+- [x] 2.4 Descartar los sorteos que vuelven trivial el problema (una resta que da cero, una fracción que se simplifica sola).
 
 ## 3. Presentación
 
 **Files:** Create: `src/lib/topics/problemas/Render.tsx`, `Render.css`, `text.ts` · Modify: `src/lib/topics/index.ts`, `types.ts`
 
-- [ ] 3.1 `Render` del enunciado, legible y sin adornos: es un texto que hay que leer entero.
-- [ ] 3.2 CSS con los tokens del tema y **sin Tailwind nuevo**.
-- [ ] 3.3 Registrar el tema y sumar `'problemas'` a `TopicId`.
-- [ ] 3.4 Enunciados y pistas: la pista **sí** nombra la técnica y explica por qué es esa.
+- [x] 3.1 `Render` del enunciado, legible y sin adornos: es un texto que hay que leer entero.
+- [x] 3.2 CSS con los tokens del tema y **sin Tailwind nuevo**.
+- [x] 3.3 Registrar el tema y sumar `'problemas'` a `TopicId`.
+- [x] 3.4 Enunciados y pistas: la pista **sí** nombra la técnica y explica por qué es esa.
 - [ ] 3.5 Verificación visual con la skill `run` **a 390 px primero**: el enunciado y las opciones tienen que caber sin scroll mientras corre el reloj.
 
 ## 4. Categoría de tabla de posiciones
 
 **Files:** Modify: `src/lib/topicSelection.ts`, `worker/index.ts` y sus pruebas
 
-- [ ] 4.1 Pruebas: `topicCategory(['problemas'])` es `'problemas'`, combinada es `'mixto'`, y el Worker acepta el valor.
-- [ ] 4.2 Sumar `'problemas'` a `TopicCategory` y a `TOPIC_CATEGORIES`, **en el mismo cambio**, o los puntajes se archivan bajo otro contenido.
+- [x] 4.1 Pruebas: `topicCategory(['problemas'])` es `'problemas'`, combinada es `'mixto'`, y el Worker acepta el valor.
+- [x] 4.2 Sumar `'problemas'` a `TopicCategory` y a `TOPIC_CATEGORIES`, **en el mismo cambio**, o los puntajes se archivan bajo otro contenido.
 
 ## 5. Cierre
 

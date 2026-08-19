@@ -4,7 +4,7 @@ const DEFAULT_TOP_LIMIT = 10
 const MAX_TOP_LIMIT = 50
 const QUESTION_LIMITS = [10, 20, 30, 50]
 const TIMER_SECONDS_OPTIONS = [0, 10, 15, 20, 30, 60]
-const TOPIC_CATEGORIES = ['fracciones', 'decimales', 'algebra', 'mixto']
+const TOPIC_CATEGORIES = ['fracciones', 'decimales', 'algebra', 'problemas', 'mixto']
 const DEFAULT_TOPIC_CATEGORY = 'fracciones'
 
 interface SubmitBody {

@@ -7,6 +7,7 @@ describe('readTopicCategory', () => {
     expect(readTopicCategory('decimales')).toBe('decimales')
     expect(readTopicCategory('mixto')).toBe('mixto')
     expect(readTopicCategory('algebra')).toBe('algebra')
+    expect(readTopicCategory('problemas')).toBe('problemas')
   })
 
   it('trata cualquier valor desconocido como fracciones en vez de rechazarlo', () => {

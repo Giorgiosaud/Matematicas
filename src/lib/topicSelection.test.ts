@@ -58,6 +58,10 @@ describe('topicCategory', () => {
     expect(topicCategory(['algebra'])).toBe('algebra')
   })
 
+  it('clasifica una sesión solo de problemas en su propia categoría', () => {
+    expect(topicCategory(['problemas'])).toBe('problemas')
+  })
+
   it('cualquier combinación con álgebra es mixto', () => {
     expect(topicCategory(['algebra', 'decimales'])).toBe('mixto')
     expect(topicCategory(['fracciones', 'algebra'])).toBe('mixto')

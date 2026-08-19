@@ -1,0 +1,19 @@
+/* El enunciado es un texto que hay que leer entero, así que manda la
+   legibilidad: nada de tipografía display aquí. El resto del juego grita; esto
+   se lee. */
+
+.problema {
+  --problema-font-size: clamp(1rem, 3.6vw, 1.45rem);
+  --problema-color: #fff;
+  --problema-line-height: 1.45;
+  --problema-max-inline-size: 34rem;
+
+  max-inline-size: var(--problema-max-inline-size);
+  margin-inline: auto;
+  font-size: var(--problema-font-size);
+  font-weight: 700;
+  line-height: var(--problema-line-height);
+  color: var(--problema-color);
+  text-align: center;
+  text-wrap: pretty;
+}
