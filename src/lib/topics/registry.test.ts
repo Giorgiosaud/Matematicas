@@ -115,3 +115,44 @@ describe('getTopic', () => {
     expect(getTopic('constructor' as never).id).toBe('fracciones')
   })
 })
+
+describe('reparto de temas por turnos', () => {
+  it('con tres temas, treinta preguntas dan diez de cada uno', () => {
+    // Sortear cada pregunta por separado da la proporción correcta sólo a la
+    // larga: en una partida corta un 6-2-2 es perfectamente posible y deja al
+    // niño casi sin practicar dos de los tres temas.
+    const conteo: Record<string, number> = {}
+    for (let i = 0; i < 30; i++) {
+      const ex = generateExercise(1, ['fracciones', 'decimales', 'algebra'], i)
+      conteo[ex.topic] = (conteo[ex.topic] ?? 0) + 1
+    }
+    expect(conteo).toEqual({ fracciones: 10, decimales: 10, algebra: 10 })
+  })
+
+  it('con dos temas, diez preguntas dan cinco de cada uno', () => {
+    const conteo: Record<string, number> = {}
+    for (let i = 0; i < 10; i++) {
+      const ex = generateExercise(1, ['decimales', 'algebra'], i)
+      conteo[ex.topic] = (conteo[ex.topic] ?? 0) + 1
+    }
+    expect(conteo).toEqual({ decimales: 5, algebra: 5 })
+  })
+
+  it('no empieza siempre por el mismo tema: el orden rota en cada vuelta', () => {
+    const temas = ['fracciones', 'decimales', 'algebra'] as const
+    const primeros = [0, 3, 6].map(i => generateExercise(1, [...temas], i).topic)
+    expect(new Set(primeros).size).toBeGreaterThan(1)
+  })
+
+  it('sin índice sigue sorteando, para quien lo llame sin número de pregunta', () => {
+    const vistos = new Set<string>()
+    for (let i = 0; i < 200; i++) vistos.add(generateExercise(1, ['fracciones', 'algebra']).topic)
+    expect(vistos.size).toBe(2)
+  })
+
+  it('un solo tema no se ve afectado', () => {
+    for (let i = 0; i < 20; i++) {
+      expect(generateExercise(1, ['algebra'], i).topic).toBe('algebra')
+    }
+  })
+})

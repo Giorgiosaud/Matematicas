@@ -80,20 +80,19 @@ describe('Home — solo mode name validation', () => {
 })
 
 describe('Home — selección de temas', () => {
-  it('arranca con fracciones marcado en un dispositivo nuevo', () => {
+  it('arranca con todos los temas marcados en un dispositivo nuevo', () => {
     render(<Home onStart={vi.fn()} />)
 
-    expect(screen.getByRole('checkbox', { name: /FRACCIONES/ })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: /DECIMALES/ })).not.toBeChecked()
+    for (const chip of screen.getAllByRole('checkbox')) expect(chip).toBeChecked()
   })
 
-  it('permite marcar varios temas y los pasa a la partida', async () => {
+  it('desmarcar un tema lo saca de la partida', async () => {
     vi.mocked(checkName).mockResolvedValue('available')
     const onStart = vi.fn()
     render(<Home onStart={onStart} />)
     selectSoloMode()
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /DECIMALES/ }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /ÁLGEBRA/ }))
     fireEvent.change(nameInput(), { target: { value: 'Ana' } })
     fireEvent.click(playButton())
 
@@ -106,7 +105,9 @@ describe('Home — selección de temas', () => {
     const onStart = vi.fn()
     render(<Home onStart={onStart} />)
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /FRACCIONES/ }))
+    for (const nombre of [/FRACCIONES/, /DECIMALES/, /ÁLGEBRA/]) {
+      fireEvent.click(screen.getByRole('checkbox', { name: nombre }))
+    }
 
     expect(screen.getByText('Elige al menos un tema para jugar')).toBeInTheDocument()
     expect(playButton()).toBeDisabled()

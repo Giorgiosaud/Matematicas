@@ -34,6 +34,7 @@ El libro no las presenta solo con símbolos: las introduce con **balanzas de pes
 
 ### Modified Capabilities
 - `tema-algebra`: el tema pasa a cubrir también ecuaciones, desigualdades e inecuaciones, y a mostrar balanzas.
+- `seleccion-temas`: un dispositivo nuevo arranca con todos los temas marcados, y las partidas que combinan varios reparten las preguntas por turnos en vez de sortearlas.
 
 ## Impact
 
