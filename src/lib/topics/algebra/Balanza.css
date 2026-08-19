@@ -1,0 +1,139 @@
+/* La balanza de las páginas 80 a 87. El estado —equilibrio o inclinación— se
+   dibuja con geometría y no con texto: escribir «este lado pesa más» junto al
+   dibujo convertiría una pregunta de interpretación en una de lectura, y leer
+   la balanza es justo lo que el libro evalúa. */
+
+.balanza {
+  --balanza-ancho: min(20rem, 90vw);
+  --travesano-alto: 0.5rem;
+  --travesano-color: #ffd700;
+  --plato-alto: 0.35rem;
+  --plato-color: rgb(255 255 255 / 0.75);
+  --pesa-background: #1e2536;
+  --pesa-border-color: rgb(255 255 255 / 0.35);
+  --pesa-color: #fff;
+  --pesa-font-size: clamp(0.8rem, 3vw, 1.05rem);
+  --taco-background: rgb(255 255 255 / 0.2);
+  --inclinacion: 0deg;
+  --alza-izquierda: 0px;
+  --alza-derecha: 0px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--balanza-ancho);
+  margin-inline: auto;
+}
+
+.balanza--baja-izquierda { --inclinacion: 9deg; --alza-izquierda: 14px; --alza-derecha: -14px; }
+.balanza--baja-derecha { --inclinacion: -9deg; --alza-izquierda: -14px; --alza-derecha: 14px; }
+
+.balanza__brazos {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 5.5rem;
+}
+
+.balanza__travesano {
+  position: absolute;
+  inset-inline: 4%;
+  bottom: 0;
+  height: var(--travesano-alto);
+  border-radius: 999px;
+  background: var(--travesano-color);
+  transform: rotate(var(--inclinacion));
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.balanza__lado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 44%;
+  transform: translateY(var(--_alza));
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.balanza__lado--izquierda { --_alza: var(--alza-izquierda); }
+.balanza__lado--derecha { --_alza: var(--alza-derecha); }
+
+.balanza__pesas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.balanza__pesa {
+  min-width: 2.2rem;
+  padding: 0.3rem 0.45rem;
+  border: 2px solid var(--pesa-border-color);
+  border-radius: 0.35rem 0.35rem 0.2rem 0.2rem;
+  background: var(--pesa-background);
+  color: var(--pesa-color);
+  font-size: var(--pesa-font-size);
+  font-weight: 900;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.balanza__pesa--incognita {
+  --pesa-border-color: #ffd700;
+  --pesa-color: #ffd700;
+}
+
+.balanza__plato {
+  width: 100%;
+  height: var(--plato-alto);
+  border-radius: 999px;
+  background: var(--plato-color);
+}
+
+.balanza__pie {
+  width: 0.5rem;
+  height: 1.6rem;
+  background: var(--travesano-color);
+}
+
+.balanza__base {
+  width: 45%;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--travesano-color);
+}
+
+/* Tacos: la balanza descansa sobre ellos hasta que el jugador responde. Al
+   soltarse, el travesaño queda como tenga que quedar — y en una ecuación queda
+   nivelado, que es la demostración de que la ecuación era cierta. */
+.balanza__tacos {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-inline: 12%;
+  height: 0.9rem;
+}
+
+.balanza__taco {
+  width: 1.1rem;
+  height: 100%;
+  border-radius: 0.2rem;
+  background: var(--taco-background);
+  transition: transform 320ms ease-in, opacity 320ms ease-in;
+}
+
+.balanza__taco--fuera { opacity: 0; }
+.balanza__taco--fuera:first-child { transform: translateX(-140%) rotate(-25deg); }
+.balanza__taco--fuera:last-child { transform: translateX(140%) rotate(25deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .balanza__travesano,
+  .balanza__lado,
+  .balanza__taco {
+    transition: none;
+  }
+}

@@ -36,6 +36,22 @@ export function describe(exercise: Exercise): string {
       return '¿Qué significa esta expresión?'
     case 'valorizar':
       return '¿Cuál es el valor de la expresión?'
+    case 'ecuacion-balanza':
+      return '¿Qué ecuación representa la balanza?'
+    case 'resolver-ecuacion':
+      return '¿Cuánto vale la incógnita?'
+    case 'ecuacion-desde-frase':
+      return '¿Qué ecuación representa la situación?'
+    case 'desigualdad':
+      return 'Completa con <, > o ='
+    case 'inecuacion-balanza':
+      return '¿Qué inecuación representa la balanza?'
+    case 'menor-natural':
+      return '¿Cuál es el menor número natural que la cumple?'
+    case 'no-satisface':
+      // El «NO» va en mayúsculas como en el libro: sin eso la pregunta acaba
+      // midiendo comprensión lectora en vez de matemática.
+      return '¿Cuál de estos números NO la cumple?'
     default:
       return 'Resuelve'
   }
@@ -68,6 +84,20 @@ export function hint(exercise: Exercise): string {
       return tieneCoeficiente(expresion)
         ? 'Pista: 3x quiere decir 3 · x. Cambia cada letra por su valor y resuelve primero las multiplicaciones.'
         : 'Pista: cambia cada letra por su valor y resuelve la operación.'
+    case 'ecuacion-balanza':
+      return 'Pista: lo que hay en un platillo pesa lo mismo que lo del otro. Eso es lo que dice el igual.'
+    case 'resolver-ecuacion':
+      return 'Pista: lo que le quitas a un lado, quítaselo al otro. Si en la ecuación suma, tú restas; si resta, sumas.'
+    case 'ecuacion-desde-frase':
+      return 'Pista: lo que ya tienes más lo que falta da el total. Esa suma es la ecuación.'
+    case 'desigualdad':
+      return 'Pista: no hace falta calcular los dos lados enteros. Compara una parte con la otra.'
+    case 'inecuacion-balanza':
+      return 'Pista: el platillo que baja es el que pesa más, y la punta del signo mira siempre al lado más pequeño.'
+    case 'menor-natural':
+      return 'Pista: busca primero el valor que dejaría los dos lados iguales. El que sirve es el siguiente.'
+    case 'no-satisface':
+      return 'Pista: prueba los números uno por uno. Buscas el único que NO la cumple, no los que sí.'
     default:
       return ''
   }

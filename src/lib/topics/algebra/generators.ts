@@ -3,6 +3,11 @@ import type { Expr } from './expresion'
 import { evaluar, formatear, tieneDivision, variablesDe } from './expresion'
 import type { Plantilla } from './frases'
 import { PLANTILLAS, plantillasVecinas } from './frases'
+import type { Inecuacion, Lado, Signo } from './ecuacion'
+import {
+  ecuacion, formatearEcuacion, formatearInecuacion, inecuacion,
+  menorNaturalQueSatisface, tieneSolucionNatural,
+} from './ecuacion'
 import type { Operacion, Secuencia } from './secuencia'
 import { describirPatron, secuencia, termino, terminos, tramoValido } from './secuencia'
 
@@ -25,6 +30,20 @@ export interface AlgebraPayload {
   expresion?: string
   // Valores de las letras en los ejercicios de valorizar ("si a = 4 y b = 2").
   valores?: Record<string, number>
+  // Balanza a dibujar. `estado` dice qué platillo baja; en las de ecuación es
+  // 'equilibrio' y el dibujo se apoya en tacos hasta que el jugador responde.
+  balanza?: Balanza
+}
+
+export interface Pesa {
+  gramos?: number
+  incognita?: string
+}
+
+export interface Balanza {
+  izquierda: Pesa[]
+  derecha: Pesa[]
+  estado: 'equilibrio' | 'baja-izquierda' | 'baja-derecha'
 }
 
 // Único punto de estrechamiento del payload en el tema.
@@ -311,6 +330,167 @@ function coeficienteComoSuma(expr: Expr, valores: Record<string, number>): numbe
   }
 }
 
+
+// ── Ecuaciones, desigualdades e inecuaciones ─────────────────────────────────
+
+// Los números de las opciones salen siempre del propio dibujo. Una opción con
+// un número que no está en la balanza se descarta sin pensar, y entonces la
+// pregunta se resuelve por eliminación en vez de por comprensión.
+function makeEcuacionBalanza(round: number): Exercise {
+  const v = pick(LETRAS)
+  const sumando = randInt(2, 20 + round * 3)
+  const solucion = randInt(2, 30 + round * 5)
+  const total = solucion + sumando
+  const ec = ecuacion(v, [null, sumando], total)
+  const answer = formatearEcuacion(ec)
+  const vecinas = [
+    formatearEcuacion(ecuacion(v, [null, -sumando], total)),
+    formatearEcuacion(ecuacion(v, [null, sumando], total, { izquierda: false })),
+    formatearEcuacion(ecuacion(v, [null, total], sumando)),
+  ]
+  return make('ecuacion-balanza', answer, buildOptions(answer, vecinas), {
+    balanza: {
+      izquierda: [{ incognita: v }, { gramos: sumando }],
+      derecha: [{ gramos: total }],
+      estado: 'equilibrio',
+    },
+  })
+}
+
+function makeResolverEcuacion(round: number): Exercise {
+  const v = pick(LETRAS)
+  const solucion = randInt(3, 40 + round * 8)
+  const termino = randInt(2, 30 + round * 5)
+  const resta = Math.random() < 0.4
+  const izquierda = Math.random() < 0.5
+  const lado: Lado = resta ? [null, -termino] : [termino, null]
+  const ec = ecuacion(v, lado, solucion + (resta ? -termino : termino), { izquierda })
+  const answer = String(solucion)
+  const vecinos = [
+    // Operar al revés: el error de quien memoriza «se pasa al otro lado» sin
+    // entender por qué cambia el signo.
+    String(ec.resultado + (resta ? -termino : termino)),
+    String(solucion + 1),
+    String(Math.abs(solucion - termino)),
+  ].filter(candidato => Number(candidato) >= 0)
+  return make('resolver-ecuacion', answer, buildOptions(answer, vecinos), {
+    expresion: formatearEcuacion(ec),
+  })
+}
+
+function makeEcuacionDesdeFrase(round: number): Exercise {
+  const v = pick(LETRAS)
+  const parte = randInt(10, 40 + round * 10)
+  const total = parte + randInt(10, 60)
+  const ec = ecuacion(v, [parte, null], total)
+  const answer = formatearEcuacion(ec)
+  const prompt = `Ana ya leyó ${parte} páginas de un libro de ${total}. ¿Qué ecuación dice cuántas le faltan?`
+  const vecinas = [
+    formatearEcuacion(ecuacion(v, [null, -parte], total)),
+    formatearEcuacion(ecuacion(v, [parte, null], total, { izquierda: false })),
+    formatearEcuacion(ecuacion(v, [total, null], parte)),
+  ]
+  return make('ecuacion-desde-frase', answer, buildOptions(answer, vecinas), { prompt })
+}
+
+// Pares que se pueden comparar mirando las partes, sin calcular los dos lados
+// enteros: es la propiedad de las desigualdades que enseña el libro.
+function makeDesigualdad(round: number): Exercise {
+  const max = 20 + round * 5
+  const a = randInt(2, max)
+  const b = randInt(2, max)
+  // El segundo par se construye moviendo cada sumando un poco respecto del
+  // primero: así se puede resolver comparando parte con parte, que es la
+  // propiedad que enseña el libro, en vez de sumando los dos totales.
+  // El mínimo de 1 no es cosmético: sin él un sumando puede salir negativo y el
+  // enunciado quedaría escrito «7 + −2», que no es lo que se está preguntando.
+  const c = Math.max(1, a + pick([0, randInt(1, 8), -randInt(1, 8)]))
+  const d = Math.max(1, b + pick([0, randInt(1, 8), -randInt(1, 8)]))
+  const izquierda = a + b
+  const derecha = c + d
+  const answer = izquierda === derecha ? '=' : izquierda > derecha ? '>' : '<'
+  return make('desigualdad', answer, shuffle(['<', '>', '=']), {
+    prompt: `${a} + ${b}   ?   ${c} + ${d}`,
+  })
+}
+
+function inecuacionDeRonda(round: number): { inec: Inecuacion; balanza: Balanza } {
+  for (let intento = 0; intento < 30; intento++) {
+    const v = pick(LETRAS)
+    const sumando = randInt(2, 15 + round * 2)
+    const total = randInt(sumando + 2, sumando + 30 + round * 4)
+    const signo: Signo = Math.random() < 0.5 ? '<' : '>'
+    const inec = inecuacion(v, [null, sumando], signo, total)
+    if (!tieneSolucionNatural(inec)) continue
+    return {
+      inec,
+      balanza: {
+        izquierda: [{ incognita: v }, { gramos: sumando }],
+        derecha: [{ gramos: total }],
+        estado: signo === '<' ? 'baja-derecha' : 'baja-izquierda',
+      },
+    }
+  }
+  const inec = inecuacion('x', [null, 5], '<', 20)
+  return {
+    inec,
+    balanza: { izquierda: [{ incognita: 'x' }, { gramos: 5 }], derecha: [{ gramos: 20 }], estado: 'baja-derecha' },
+  }
+}
+
+function makeInecuacionBalanza(round: number): Exercise {
+  const { inec, balanza } = inecuacionDeRonda(round)
+  const answer = formatearInecuacion(inec)
+  const contrario: Signo = inec.signo === '<' ? '>' : '<'
+  const vecinas = [
+    formatearInecuacion(inecuacion(inec.incognita, inec.lado, contrario, inec.resultado)),
+    formatearInecuacion(inecuacion(inec.incognita, [null, -(inec.lado[1] as number)], inec.signo, inec.resultado)),
+    formatearInecuacion(inecuacion(inec.incognita, [inec.resultado, null], inec.signo, inec.lado[1] as number)),
+  ]
+  return make('inecuacion-balanza', answer, buildOptions(answer, vecinas), { balanza })
+}
+
+function makeMenorNatural(round: number): Exercise {
+  // Solo «mayor que»: con «menor que» el menor natural es siempre el cero y la
+  // pregunta no enseña nada.
+  for (let intento = 0; intento < 30; intento++) {
+    const v = pick(LETRAS)
+    const sumando = randInt(2, 15 + round * 2)
+    const total = randInt(sumando + 3, sumando + 30 + round * 5)
+    const inec = inecuacion(v, [null, sumando], '>', total)
+    const menor = menorNaturalQueSatisface(inec)
+    if (menor === null || menor <= 0) continue
+    const answer = String(menor)
+    const vecinos = [
+      // El valor que resuelve la igualdad: quien contesta esto entendió la
+      // ecuación pero no la desigualdad.
+      String(menor - 1),
+      String(menor + 1),
+      String(menor + 2),
+    ].filter(candidato => Number(candidato) >= 0)
+    return make('menor-natural', answer, buildOptions(answer, vecinos), {
+      expresion: formatearInecuacion(inec),
+    })
+  }
+  return makeMenorNatural(1)
+}
+
+function makeNoSatisface(round: number): Exercise {
+  for (let intento = 0; intento < 30; intento++) {
+    const v = pick(LETRAS)
+    const total = randInt(12, 40 + round * 6)
+    const inec = inecuacion(v, [null], '<', total)
+    const cumplen = shuffle(Array.from({ length: total }, (_, i) => i)).slice(0, 3)
+    const falla = total + randInt(0, 20)
+    if (cumplen.length < 3) continue
+    const answer = String(falla)
+    const opciones = shuffle([answer, ...cumplen.map(String)])
+    if (new Set(opciones).size !== opciones.length) continue
+    return make('no-satisface', answer, opciones, { expresion: formatearInecuacion(inec) })
+  }
+  return makeNoSatisface(1)
+}
+
 export const generators: Record<string, (round: number) => Exercise> = {
   patron: makePatron,
   completar: makeCompletar,
@@ -319,4 +499,11 @@ export const generators: Record<string, (round: number) => Exercise> = {
   'frase-a-expresion': makeFraseAExpresion,
   'expresion-a-frase': makeExpresionAFrase,
   valorizar: makeValorizar,
+  'ecuacion-balanza': makeEcuacionBalanza,
+  'resolver-ecuacion': makeResolverEcuacion,
+  'ecuacion-desde-frase': makeEcuacionDesdeFrase,
+  desigualdad: makeDesigualdad,
+  'inecuacion-balanza': makeInecuacionBalanza,
+  'menor-natural': makeMenorNatural,
+  'no-satisface': makeNoSatisface,
 }
