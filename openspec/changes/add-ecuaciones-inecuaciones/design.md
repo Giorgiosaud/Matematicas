@@ -42,6 +42,34 @@ En las de resolver, el distractor principal es **operar al revés** —sumar don
 
 En la del menor natural, el distractor es **el valor que resuelve la igualdad**: quien contesta 13 a `x + 12 > 25` entendió la ecuación pero no la desigualdad, y esa confusión es exactamente lo que la pregunta 16 del libro persigue.
 
+### Los tacos: la balanza se suelta al responder
+
+La balanza se dibuja apoyada sobre dos tacos, y al responder los tacos se
+retiran y el travesaño se suelta. Es idea del dueño y entra, pero **solo donde
+el estado de la balanza es la respuesta, no el enunciado**.
+
+- En **plantear la ecuación**, la balanza está en equilibrio y ese equilibrio es
+  lo que la ecuación afirma. Con tacos, el niño ve dos platillos apoyados,
+  elige la ecuación, y al acertar los tacos salen y la balanza **se queda
+  quieta y nivelada**: la ecuación era cierta y la balanza lo confirma sola. Eso
+  no es adorno, es la demostración.
+- En **plantear la inecuación**, la inclinación es el dato de partida: así la
+  dibuja el libro y sin ella no hay pregunta. Ahí la balanza aparece ya
+  inclinada y sin tacos.
+
+La distinción importa: poner tacos en la inecuación escondería justo lo que hay
+que leer.
+
+No hace falta fontanería nueva. El `Render` de cada tema ya recibe
+`selectedOption` —decimales lo usa para pintar el signo elegido dentro del
+enunciado—, así que la balanza sabe si el jugador ya respondió sin tocar las
+pantallas de juego.
+
+**Con tope de tiempo.** La animación va en el orden de los 400 ms y **no
+bloquea** el botón de continuar. El juego ya tiene confeti y una pantalla de
+chiste entre rondas; un tercer compás obligatorio, con el reloj corriendo,
+convierte el premio en peaje.
+
 ### Un solo tema, no dos
 
 Se descartó un tema `ecuaciones` separado. El libro lo enseña como una unidad y la prueba lo toma junto; obligar a marcar dos casillas para practicar una sola prueba es trasladar al niño una división que solo existe en el código. El coste es que `algebra` llega a trece generadores y su `Render` gana ramas — si eso se vuelve incómodo, la respuesta es partir el `Render` por tipo de presentación, no partir el tema.
@@ -51,4 +79,8 @@ Se descartó un tema `ecuaciones` separado. El libro lo enseña como una unidad 
 - **El `Render` del tema crece.** Ya tiene tres formas de presentación y suma la balanza. Se mitiga sacando la balanza a su propio componente desde el principio, en vez de dejarla crecer dentro del `switch`.
 - **La balanza en pantalla estrecha.** Dos platillos con pesas y números tienen que caber en 390 px sin que las cifras se solapen. Es lo primero que hay que mirar en la verificación visual, no lo último.
 - **Una inecuación puede no tener solución natural** según cómo se sorteen los números (`x + 30 < 12`). El generador debe garantizar que exista al menos un natural que la cumpla antes de dar por buena la pregunta, igual que valorizar garantiza que el resultado no sea negativo.
+- **La animación de los tacos puede cansar.** Se ve en cada pregunta de
+  ecuación, y lo que la primera vez es una demostración a la décima es una
+  espera. Por eso es corta y no bloquea; si aun así molesta al jugarlo, se quita
+  y el dibujo estático sigue cumpliendo.
 - **«Cuál NO satisface» se lee mal si el enunciado no lo grita.** El libro lo pone en mayúsculas por algo. El enunciado debe destacar el «no», o la pregunta mide comprensión lectora en vez de matemática.

@@ -28,6 +28,9 @@
 - [ ] 3.2 Escribir `Balanza.css` con los tokens del tema y sin Tailwind nuevo. La inclinación con `transform: rotate` sobre el travesaño.
 - [ ] 3.3 Enganchar la balanza en el `Render` del tema, sacándola a su propio componente y no dentro del `switch`.
 - [ ] 3.4 Comprobar con una prueba que el dibujo no contiene las palabras «mayor», «menor» ni «igual», ni los signos `<`, `>`, `=`.
+- [ ] 3.5 Dibujar los **tacos** bajo los platillos en las balanzas en equilibrio, y soltarlos cuando `selectedOption` deja de ser nulo: los tacos salen y el travesaño queda nivelado. La animación dura ~400 ms y **no bloquea** el botón de continuar.
+- [ ] 3.6 Las balanzas de inecuación aparecen **ya inclinadas y sin tacos**: ahí la inclinación es el enunciado, no la respuesta.
+- [ ] 3.7 Comprobar en el navegador que la animación se ve bien también al fallar, y que no retrasa la siguiente pregunta.
 
 ## 4. Enunciados y pistas
 
