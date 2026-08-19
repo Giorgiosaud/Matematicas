@@ -45,5 +45,5 @@
 - [x] 5.1 Verificación visual con la skill `run`: jugar una partida solo de álgebra, revisar la balanza en equilibrio y las dos inclinaciones, en ancho de teléfono **y** de escritorio. Que ninguna cifra se solape.
 - [x] 5.2 Verificación con evidencia: `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
 - [x] 5.3 Actualizar `CLAUDE.md` si el tema cambia de forma.
-- [ ] 5.4 Desplegar y comprobar en producción.
+- [x] 5.4 Desplegar y comprobar en producción. Versión `c2dee3a3`, 18-ago-2026.
 - [ ] 5.5 `openspec validate` y `openspec archive`, y mover al roadmap lo que quede pendiente.
