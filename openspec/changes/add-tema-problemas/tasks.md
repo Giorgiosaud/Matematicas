@@ -40,7 +40,7 @@
 
 ## 5. Cierre
 
-- [ ] 5.1 Verificación con evidencia: `pnpm vitest run`, `pnpm lint` y `pnpm build`, pegando la salida real.
-- [ ] 5.2 Actualizar `CLAUDE.md`: cuatro temas y cinco categorías.
+- [x] 5.1 Verificación con evidencia: `pnpm vitest run`, `pnpm lint` y `pnpm build`, pegando la salida real.
+- [x] 5.2 Actualizar `CLAUDE.md`: cuatro temas y cinco categorías.
 - [ ] 5.3 Fusionar a `main` y dejar que el pipeline despliegue; comprobar en producción.
 - [ ] 5.4 `openspec validate` y `openspec archive`, y mover al roadmap lo que quede (problemas de varios pasos).
