@@ -1,4 +1,4 @@
-const jokes = [
+export const jokes = [
   { setup: '¿Por qué el libro de matemáticas está triste?', punchline: '¡Porque tiene muchos problemas!' },
   { setup: '¿Qué le dijo el cero al ocho?', punchline: '¡Bonito cinturón!' },
   { setup: '¿Cómo se llama el campeón de buceo de Alemania?', punchline: 'Hans Abajo.' },
@@ -32,6 +32,30 @@ const jokes = [
   { setup: '¿Cuál es el baile favorito del tomate?', punchline: 'La salsa.' },
   { setup: '¿Dónde cuelga Superman su supercapa?', punchline: 'En el superchero.' },
   { setup: '¿Cómo se llama el campeón de las escondidas?', punchline: 'No se sabe, aún no lo han encontrado.' },
+  // Los de matemáticas van mezclados con el resto a propósito: el chiste es el
+  // premio entre pregunta y pregunta, no otra pregunta disfrazada. Se escriben
+  // sobre lo que el niño está viendo en clase —fracciones, decimales, álgebra—
+  // para que el guiño se entienda.
+  { setup: '¿Por qué el 6 le tiene miedo al 7?', punchline: 'Porque siete, ocho, nueve.' },
+  { setup: '¿Por qué la x anda siempre preocupada?', punchline: 'Porque nunca sabe cuánto vale.' },
+  { setup: '¿Qué le dijo el 0,5 a la mitad?', punchline: '¡Somos lo mismo, pero yo me visto con coma!' },
+  { setup: '¿Por qué el libro de álgebra fue al psicólogo?', punchline: 'Porque tenía demasiadas incógnitas.' },
+  { setup: '¿Qué le dijo el numerador al denominador?', punchline: '¡Sostenme, que me caigo!' },
+  { setup: '¿Por qué las ecuaciones nunca se pelean?', punchline: 'Porque siempre quedan a mano.' },
+  { setup: '¿Qué le dijo la balanza a la ecuación?', punchline: 'Si le sacas a un lado, sácale al otro.' },
+  { setup: '¿Por qué la coma decimal nunca se pierde?', punchline: 'Porque siempre sabe cuál es su lugar.' },
+  { setup: '¿Qué hace una secuencia cuando se aburre?', punchline: 'Sigue con su patrón.' },
+  { setup: '¿Cuál es el número más presumido?', punchline: 'El uno: siempre quiere ir primero.' },
+  { setup: '¿Por qué el triángulo nunca discute?', punchline: 'Porque tiene tres puntos de vista.' },
+  { setup: '¿Por qué el 2 y el 3 se llevan tan bien?', punchline: 'Porque siempre encuentran algo en común… ¡un denominador!' },
+  { setup: '¿Qué le dijo una fracción a la otra cuando se enojó?', punchline: '¡No te partas!' },
+  { setup: '¿Cómo se despiden los químicos?', punchline: 'Ácido un placer.' },
+  { setup: '¿Qué hace una vaca cuando sale el sol?', punchline: 'Sombra.' },
+  { setup: '¿Cómo se llama el primo vegetariano de Bruce Lee?', punchline: 'Broco Lee.' },
+  { setup: '¿Por qué la luna nunca tiene hambre?', punchline: 'Porque siempre está llena.' },
+  { setup: '¿Cuál es el último animal del mundo?', punchline: 'El del-fín.' },
+  { setup: '¿Qué le dijo un gusano a otro gusano?', punchline: 'Voy a dar una vuelta a la manzana.' },
+  { setup: '¿Cuál es el colmo de un electricista?', punchline: 'Que su mujer se llame Luz y lo tenga siempre en corriente.' },
 ]
 
 let lastIndex = -1
