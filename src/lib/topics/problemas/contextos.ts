@@ -291,30 +291,6 @@ export const CONTEXTOS: Contexto[] = [
     },
   },
   {
-    id: 'sandias-feria',
-    tecnica: 'decimales',
-    unidad: 'kg',
-    limites: { min: 3, max: 8 },
-    construir() {
-      return sortearHasta(() => {
-        const primera = randInt(30, 80) / 10
-        const segunda = randInt(30, 80) / 10
-        const mayor = Math.max(primera, segunda)
-        const menor = Math.min(primera, segunda)
-        return {
-          enunciado: `En la feria de Renca, una sandía pesó ${numero(primera)} kg y otra pesó ${numero(segunda)} kg. ¿Cuál es la diferencia de masa entre las dos sandías?`,
-          cantidades: [primera, segunda],
-          respuesta: Math.round((mayor - menor) * 1000) / 1000,
-          operacion: `${numero(mayor)} − ${numero(menor)}`,
-          errores: [
-            { operacion: `${numero(primera)} + ${numero(segunda)}`, valor: Math.round((primera + segunda) * 1000) / 1000 },
-            { operacion: `${numero(mayor)}`, valor: mayor },
-          ],
-        }
-      })
-    },
-  },
-  {
     id: 'posta-natacion',
     tecnica: 'decimales',
     unidad: 's',
@@ -448,28 +424,6 @@ export const CONTEXTOS: Contexto[] = [
     },
   },
   {
-    id: 'libro-paginas',
-    tecnica: 'ecuacion',
-    unidad: 'páginas',
-    limites: { min: 20, max: 340 },
-    construir() {
-      return sortearHasta(() => {
-        const total = randInt(120, 340)
-        const leidas = randInt(20, total - 30)
-        return {
-          enunciado: `El libro que lee Antonia tiene ${total} páginas. Ya leyó ${leidas} páginas. ¿Cuántas páginas le faltan por leer?`,
-          cantidades: [total, leidas],
-          respuesta: total - leidas,
-          operacion: `${total} − ${leidas}`,
-          errores: [
-            { operacion: `${leidas} + ${total}`, valor: leidas + total },
-            { operacion: `${total}`, valor: total },
-          ],
-        }
-      })
-    },
-  },
-  {
     id: 'album-figuritas',
     tecnica: 'ecuacion',
     unidad: 'figuritas',
@@ -486,28 +440,6 @@ export const CONTEXTOS: Contexto[] = [
           errores: [
             { operacion: `${tiene} + ${total}`, valor: tiene + total },
             { operacion: `${total}`, valor: total },
-          ],
-        }
-      })
-    },
-  },
-  {
-    id: 'viaje-km',
-    tecnica: 'ecuacion',
-    unidad: 'km',
-    limites: { min: 40, max: 520 },
-    construir() {
-      return sortearHasta(() => {
-        const distanciaTotal = randInt(180, 520)
-        const recorridos = randInt(40, distanciaTotal - 60)
-        return {
-          enunciado: `La familia de Ignacio maneja ${distanciaTotal} km para llegar donde los abuelos. Ya llevan recorridos ${recorridos} km. ¿Cuántos kilómetros les faltan para llegar?`,
-          cantidades: [distanciaTotal, recorridos],
-          respuesta: distanciaTotal - recorridos,
-          operacion: `${distanciaTotal} − ${recorridos}`,
-          errores: [
-            { operacion: `${recorridos} + ${distanciaTotal}`, valor: recorridos + distanciaTotal },
-            { operacion: `${distanciaTotal}`, valor: distanciaTotal },
           ],
         }
       })
@@ -554,28 +486,6 @@ export const CONTEXTOS: Contexto[] = [
           errores: [
             { operacion: `${total} · ${personas}`, valor: total * personas },
             { operacion: `${total}`, valor: total },
-          ],
-        }
-      })
-    },
-  },
-  {
-    id: 'ahorro-bicicleta',
-    tecnica: 'ecuacion',
-    unidad: '$',
-    limites: { min: 10000, max: 140000 },
-    construir() {
-      return sortearHasta(() => {
-        const precioBici = randInt(70, 140) * 1000
-        const ahorrado = randInt(10, Math.floor(precioBici / 1000) - 20) * 1000
-        return {
-          enunciado: `La bicicleta que quiere Josefa cuesta $${precioBici}. Hasta ahora ha ahorrado $${ahorrado}. ¿Cuánto dinero le falta ahorrar para comprarla?`,
-          cantidades: [precioBici, ahorrado],
-          respuesta: precioBici - ahorrado,
-          operacion: `${precioBici} − ${ahorrado}`,
-          errores: [
-            { operacion: `${precioBici} + ${ahorrado}`, valor: precioBici + ahorrado },
-            { operacion: `${precioBici}`, valor: precioBici },
           ],
         }
       })
@@ -864,50 +774,6 @@ export const CONTEXTOS: Contexto[] = [
     },
   },
   {
-    id: 'bus-paseo',
-    tecnica: 'inecuacion',
-    unidad: 'estudiantes',
-    limites: { min: 10, max: 50 },
-    construir() {
-      return sortearHasta(() => {
-        const cupo = randInt(35, 50)
-        const confirmados = randInt(10, cupo - 5)
-        return {
-          enunciado: `El bus del paseo de curso lleva ${cupo} estudiantes como máximo y ya confirmaron ${confirmados}. ¿Cuántos más pueden anotarse sin pasarse del cupo?`,
-          cantidades: [cupo, confirmados],
-          respuesta: cupo - confirmados,
-          operacion: `${cupo} − ${confirmados}`,
-          errores: [
-            { operacion: `${cupo} + ${confirmados}`, valor: cupo + confirmados },
-            { operacion: `${cupo}`, valor: cupo },
-          ],
-        }
-      })
-    },
-  },
-  {
-    id: 'ahorro-zapatillas',
-    tecnica: 'inecuacion',
-    unidad: '$',
-    limites: { min: 5000, max: 60000 },
-    construir() {
-      return sortearHasta(() => {
-        const precio = randInt(20, 60) * 1000
-        const ahorrado = randInt(5, 19) * 1000
-        return {
-          enunciado: `Antonia quiere unas zapatillas de $${precio} y lleva ahorrados $${ahorrado}. ¿Cuánto le falta juntar como mínimo para poder comprarlas?`,
-          cantidades: [precio, ahorrado],
-          respuesta: precio - ahorrado,
-          operacion: `${precio} − ${ahorrado}`,
-          errores: [
-            { operacion: `${precio} + ${ahorrado}`, valor: precio + ahorrado },
-            { operacion: `${precio}`, valor: precio },
-          ],
-        }
-      })
-    },
-  },
-  {
     id: 'club-lectura',
     tecnica: 'inecuacion',
     unidad: 'libros',
@@ -968,6 +834,161 @@ export const CONTEXTOS: Contexto[] = [
           errores: [
             { operacion: `${record} − ${lleva}`, valor: record - lleva },
             { operacion: `${record} + ${lleva}`, valor: record + lleva },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'cajas-galletas',
+    tecnica: 'ecuacion',
+    unidad: 'galletas',
+    limites: { min: 3, max: 24 },
+    construir() {
+      return sortearHasta(() => {
+        const porCaja = randInt(8, 24)
+        const cajas = randInt(3, 9)
+        return {
+          enunciado: `Para la once del curso, la mamá de Emilia llevó ${cajas} cajas de galletas y en cada caja vienen ${porCaja}. ¿Cuántas galletas llevó en total?`,
+          cantidades: [porCaja, cajas],
+          respuesta: porCaja * cajas,
+          operacion: `${porCaja} · ${cajas}`,
+          errores: [
+            { operacion: `${porCaja} + ${cajas}`, valor: porCaja + cajas },
+            { operacion: `${porCaja} − ${cajas}`, valor: porCaja - cajas },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'entradas-familia',
+    tecnica: 'ecuacion',
+    unidad: '$',
+    limites: { min: 3, max: 9000 },
+    construir() {
+      return sortearHasta(() => {
+        const precio = randInt(6, 18) * 500
+        const personas = randInt(3, 6)
+        return {
+          enunciado: `La entrada al museo interactivo cuesta $${precio} por persona y la familia de Tomás va con ${personas} personas. ¿Cuánto pagan en total?`,
+          cantidades: [precio, personas],
+          respuesta: precio * personas,
+          operacion: `${precio} · ${personas}`,
+          errores: [
+            { operacion: `${precio} + ${personas}`, valor: precio + personas },
+            { operacion: `${precio} : ${personas}`, valor: Math.round((precio / personas) * 1000) / 1000 },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'bolsas-manzanas',
+    tecnica: 'inecuacion',
+    unidad: 'bolsas',
+    limites: { min: 4, max: 120 },
+    construir() {
+      return sortearHasta(() => {
+        const porBolsa = randInt(4, 9)
+        const manzanas = randInt(30, 120)
+        return {
+          enunciado: `En el puesto de don Luis hay ${manzanas} manzanas y en cada bolsa caben ${porBolsa}. ¿Cuántas bolsas puede llenar por completo?`,
+          cantidades: [manzanas, porBolsa],
+          respuesta: Math.floor(manzanas / porBolsa),
+          operacion: `${manzanas} : ${porBolsa}`,
+          errores: [
+            { operacion: `${manzanas} − ${porBolsa}`, valor: manzanas - porBolsa },
+            { operacion: `${manzanas} · ${porBolsa}`, valor: manzanas * porBolsa },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'vuelto-kiosco',
+    tecnica: 'inecuacion',
+    unidad: '$',
+    limites: { min: 2, max: 10000 },
+    construir() {
+      return sortearHasta(() => {
+        const precio = randInt(3, 12) * 100
+        const cuantos = randInt(2, 6)
+        const lleva = randInt(4, 10) * 1000
+        return {
+          enunciado: `Javiera lleva $${lleva} al kiosco y quiere comprar ${cuantos} completos de $${precio} cada uno. ¿Cuánto dinero le sobra?`,
+          cantidades: [precio, cuantos, lleva],
+          respuesta: lleva - precio * cuantos,
+          operacion: `${lleva} − ${precio} · ${cuantos}`,
+          errores: [
+            { operacion: `${lleva} − ${precio}`, valor: lleva - precio },
+            { operacion: `${precio} · ${cuantos}`, valor: precio * cuantos },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'agua-dias',
+    tecnica: 'decimales',
+    unidad: 'L',
+    limites: { min: 0.25, max: 7 },
+    construir() {
+      return sortearHasta(() => {
+        const porDia = randInt(25, 200) / 100
+        const dias = randInt(3, 7)
+        return {
+          enunciado: `El entrenador le pidió a Martín tomar ${numero(porDia)} L de agua cada día. Si lo cumple durante ${dias} días, ¿cuántos litros habrá tomado?`,
+          cantidades: [porDia, dias],
+          respuesta: Math.round(porDia * dias * 1000) / 1000,
+          operacion: `${numero(porDia)} · ${dias}`,
+          errores: [
+            { operacion: `${numero(porDia)} + ${dias}`, valor: Math.round((porDia + dias) * 1000) / 1000 },
+            { operacion: `${dias} − ${numero(porDia)}`, valor: Math.round((dias - porDia) * 1000) / 1000 },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'doble-hermano',
+    tecnica: 'ecuacion',
+    unidad: 'años',
+    limites: { min: 6, max: 24 },
+    construir() {
+      return sortearHasta(() => {
+        const menor = randInt(6, 12)
+        const mayor = menor * 2
+        return {
+          enunciado: `Cristóbal tiene ${mayor} años y eso es justo el doble de la edad de su hermana Amanda. ¿Qué edad tiene Amanda?`,
+          cantidades: [mayor],
+          respuesta: menor,
+          operacion: `${mayor} : 2`,
+          errores: [
+            { operacion: `${mayor} · 2`, valor: mayor * 2 },
+            { operacion: `${mayor} − 2`, valor: mayor - 2 },
+          ],
+        }
+      })
+    },
+  },
+  {
+    id: 'receta-porciones',
+    tecnica: 'fracciones',
+    unidad: 'tazas',
+    limites: { min: 2, max: 24 },
+    construir() {
+      return sortearHasta(() => {
+        const base = randInt(2, 6)
+        const veces = randInt(2, 4)
+        return {
+          enunciado: `La receta de panqueques de la tía Marcela usa ${base} tazas de harina y alcanza para 4 personas. Si quiere que alcance para ${4 * veces} personas, ¿cuántas tazas de harina necesita?`,
+          cantidades: [base, 4 * veces],
+          respuesta: base * veces,
+          operacion: `${base} · ${veces}`,
+          errores: [
+            { operacion: `${base} + ${4 * veces}`, valor: base + 4 * veces },
+            { operacion: `${4 * veces} : ${base}`, valor: Math.round(((4 * veces) / base) * 1000) / 1000 },
           ],
         }
       })
