@@ -1,7 +1,8 @@
 import type { Exercise } from '../types'
 import { decimalesPayload } from './generators'
 import { digitAt, format } from './decimal'
-import { nombrePosicion, numeroEnPalabras } from './lectura'
+import { nombrePosicion } from './lectura'
+import { numeroEnPalabras } from '../../palabras'
 
 export function describe(exercise: Exercise): string {
   const { targetScale } = decimalesPayload(exercise)

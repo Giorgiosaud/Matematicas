@@ -3,7 +3,7 @@ import type { TopicId } from './topics/types'
 
 const KEY = 'fracciones:topics'
 
-export type TopicCategory = 'fracciones' | 'decimales' | 'mixto'
+export type TopicCategory = 'fracciones' | 'decimales' | 'algebra' | 'mixto'
 
 // La selección se recuerda entre sesiones, pero nunca puede impedir jugar: una
 // selección corrupta, vacía o con temas que ya no existen vuelve al tema por

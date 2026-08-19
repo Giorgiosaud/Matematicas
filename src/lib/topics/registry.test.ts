@@ -104,7 +104,7 @@ describe('isTopicId', () => {
   })
 
   it('rechaza cualquier otra cosa', () => {
-    expect(isTopicId('algebra')).toBe(false)
+    expect(isTopicId('geometria')).toBe(false)
     expect(isTopicId(undefined)).toBe(false)
     expect(isTopicId(3)).toBe(false)
   })

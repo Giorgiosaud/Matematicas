@@ -123,7 +123,7 @@ describe('Home — selección de temas', () => {
   })
 
   it('ignora un tema guardado que ya no existe', () => {
-    localStorage.setItem('fracciones:topics', JSON.stringify(['algebra']))
+    localStorage.setItem('fracciones:topics', JSON.stringify(['geometria']))
     render(<Home onStart={vi.fn()} />)
 
     expect(screen.getByRole('checkbox', { name: /FRACCIONES/ })).toBeChecked()

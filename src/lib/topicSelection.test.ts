@@ -15,12 +15,12 @@ describe('loadTopics', () => {
   })
 
   it('ignora un tema guardado que ya no existe', () => {
-    localStorage.setItem('fracciones:topics', JSON.stringify(['decimales', 'algebra']))
+    localStorage.setItem('fracciones:topics', JSON.stringify(['decimales', 'geometria']))
     expect(loadTopics()).toEqual(['decimales'])
   })
 
   it('vuelve a fracciones si no queda ningún tema válido', () => {
-    localStorage.setItem('fracciones:topics', JSON.stringify(['algebra']))
+    localStorage.setItem('fracciones:topics', JSON.stringify(['geometria']))
     expect(loadTopics()).toEqual(['fracciones'])
   })
 
@@ -46,6 +46,17 @@ describe('topicCategory', () => {
   it('clasifica una sesión de un solo tema con ese tema', () => {
     expect(topicCategory(['fracciones'])).toBe('fracciones')
     expect(topicCategory(['decimales'])).toBe('decimales')
+  })
+
+  it('clasifica una sesión solo de álgebra en su propia categoría', () => {
+    // Sin esto el Worker no reconocería el valor y lo archivaría como
+    // fracciones: el puntaje competiría contra partidas de otro contenido.
+    expect(topicCategory(['algebra'])).toBe('algebra')
+  })
+
+  it('cualquier combinación con álgebra es mixto', () => {
+    expect(topicCategory(['algebra', 'decimales'])).toBe('mixto')
+    expect(topicCategory(['fracciones', 'algebra'])).toBe('mixto')
   })
 
   it('clasifica como mixto cuando la sesión combina temas', () => {
