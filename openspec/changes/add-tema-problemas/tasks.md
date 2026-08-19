@@ -29,7 +29,7 @@
 - [x] 3.2 CSS con los tokens del tema y **sin Tailwind nuevo**.
 - [x] 3.3 Registrar el tema y sumar `'problemas'` a `TopicId`.
 - [x] 3.4 Enunciados y pistas: la pista **sí** nombra la técnica y explica por qué es esa.
-- [ ] 3.5 Verificación visual con la skill `run` **a 390 px primero**: el enunciado y las opciones tienen que caber sin scroll mientras corre el reloj.
+- [x] 3.5 Verificación visual con la skill `run` **a 390 px primero**: el enunciado y las opciones tienen que caber sin scroll mientras corre el reloj.
 
 ## 4. Categoría de tabla de posiciones
 
