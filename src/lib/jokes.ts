@@ -36,18 +36,18 @@ export const jokes = [
   // premio entre pregunta y pregunta, no otra pregunta disfrazada. Se escriben
   // sobre lo que el niño está viendo en clase —fracciones, decimales, álgebra—
   // para que el guiño se entienda.
-  { setup: '¿Por qué el 6 le tiene miedo al 7?', punchline: 'Porque siete, ocho, nueve.' },
   { setup: '¿Por qué la x anda siempre preocupada?', punchline: 'Porque nunca sabe cuánto vale.' },
   { setup: '¿Qué le dijo el 0,5 a la mitad?', punchline: '¡Somos lo mismo, pero yo me visto con coma!' },
-  { setup: '¿Por qué el libro de álgebra fue al psicólogo?', punchline: 'Porque tenía demasiadas incógnitas.' },
+  { setup: '¿Por qué el libro de álgebra fue al psicólogo?', punchline: 'Porque tenía muchos problemas… ¡y ninguno resuelto!' },
   { setup: '¿Qué le dijo el numerador al denominador?', punchline: '¡Sostenme, que me caigo!' },
-  { setup: '¿Por qué las ecuaciones nunca se pelean?', punchline: 'Porque siempre quedan a mano.' },
+  { setup: '¿Por qué las ecuaciones nunca se caen?', punchline: 'Porque están balanceadas.' },
   { setup: '¿Qué le dijo la balanza a la ecuación?', punchline: 'Si le sacas a un lado, sácale al otro.' },
   { setup: '¿Por qué la coma decimal nunca se pierde?', punchline: 'Porque siempre sabe cuál es su lugar.' },
   { setup: '¿Qué hace una secuencia cuando se aburre?', punchline: 'Sigue con su patrón.' },
   { setup: '¿Cuál es el número más presumido?', punchline: 'El uno: siempre quiere ir primero.' },
   { setup: '¿Por qué el triángulo nunca discute?', punchline: 'Porque tiene tres puntos de vista.' },
-  { setup: '¿Por qué el 2 y el 3 se llevan tan bien?', punchline: 'Porque siempre encuentran algo en común… ¡un denominador!' },
+  { setup: '¿Qué le dijo el 1 al 10?', punchline: 'Para ser como yo, tienes que ser sin-cero.' },
+  { setup: '¿Cuánto es 1 más 1?', punchline: '¡Una pareja!' },
   { setup: '¿Qué le dijo una fracción a la otra cuando se enojó?', punchline: '¡No te partas!' },
   { setup: '¿Cómo se despiden los químicos?', punchline: 'Ácido un placer.' },
   { setup: '¿Qué hace una vaca cuando sale el sol?', punchline: 'Sombra.' },
