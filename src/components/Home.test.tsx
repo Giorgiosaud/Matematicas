@@ -93,6 +93,7 @@ describe('Home — selección de temas', () => {
     selectSoloMode()
 
     fireEvent.click(screen.getByRole('checkbox', { name: /ÁLGEBRA/ }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /PROBLEMAS/ }))
     fireEvent.change(nameInput(), { target: { value: 'Ana' } })
     fireEvent.click(playButton())
 
@@ -105,7 +106,7 @@ describe('Home — selección de temas', () => {
     const onStart = vi.fn()
     render(<Home onStart={onStart} />)
 
-    for (const nombre of [/FRACCIONES/, /DECIMALES/, /ÁLGEBRA/]) {
+    for (const nombre of [/FRACCIONES/, /DECIMALES/, /ÁLGEBRA/, /PROBLEMAS/]) {
       fireEvent.click(screen.getByRole('checkbox', { name: nombre }))
     }
 

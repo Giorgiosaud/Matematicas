@@ -22,6 +22,19 @@ Lo que ya está decidido vive en `openspec/changes/<nombre>/`, no aquí.
 
 ## Contenido — después de la prueba
 
+- **Más formas de problema, no más contextos.** El catálogo tiene 41 problemas
+  pero el **37 % se resuelve con una sola resta**. Un niño que practique mucho
+  aprende «resta los dos números que ves» y aprueba sin decidir nada, que es lo
+  contrario de lo que el tema existe para entrenar. Lo que falta no son más
+  situaciones sino más **decisiones**: comparar dos opciones de precio, repartos
+  con resto, dos pasos encadenados. Sale de contar las formas del catálogo el
+  19-ago-2026.
+- **Problemas de reparto con redondeo hacia arriba** (34 invitados en mesas de
+  6 son 6 mesas, no 5). Se intentó y se sacó: la operación correcta no se puede
+  escribir como una expresión, y ponerla en palabras rompe la pregunta de «qué
+  operación lo resuelve», donde una opción en prosa entre tres matemáticas se
+  descarta sin resolver nada. Necesita otra forma de pregunta.
+
 - **Secuencias de figuras.** Las preguntas 2, 3 y 5 de la evaluación de la
   Unidad 4 usan figuras; hoy solo hay secuencias numéricas. Pide un
   renderizador de figuras.
