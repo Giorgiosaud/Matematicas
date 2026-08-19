@@ -30,7 +30,7 @@
 - [x] 3.4 Comprobar con una prueba que el dibujo no contiene las palabras «mayor», «menor» ni «igual», ni los signos `<`, `>`, `=`.
 - [x] 3.5 Dibujar los **tacos** bajo los platillos en las balanzas en equilibrio, y soltarlos cuando `selectedOption` deja de ser nulo: los tacos salen y el travesaño queda nivelado. La animación dura ~400 ms y **no bloquea** el botón de continuar.
 - [x] 3.6 Las balanzas de inecuación aparecen **ya inclinadas y sin tacos**: ahí la inclinación es el enunciado, no la respuesta.
-- [ ] 3.7 Comprobar en el navegador que la animación se ve bien también al fallar, y que no retrasa la siguiente pregunta.
+- [x] 3.7 Comprobar en el navegador que la animación se ve bien también al fallar, y que no retrasa la siguiente pregunta.
 
 ## 4. Enunciados y pistas
 
@@ -42,8 +42,8 @@
 
 ## 5. Cierre
 
-- [ ] 5.1 Verificación visual con la skill `run`: jugar una partida solo de álgebra, revisar la balanza en equilibrio y las dos inclinaciones, en ancho de teléfono **y** de escritorio. Que ninguna cifra se solape.
-- [ ] 5.2 Verificación con evidencia: `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
-- [ ] 5.3 Actualizar `CLAUDE.md` si el tema cambia de forma.
+- [x] 5.1 Verificación visual con la skill `run`: jugar una partida solo de álgebra, revisar la balanza en equilibrio y las dos inclinaciones, en ancho de teléfono **y** de escritorio. Que ninguna cifra se solape.
+- [x] 5.2 Verificación con evidencia: `pnpm vitest run`, `pnpm lint` y `pnpm build` en verde, pegando la salida real.
+- [x] 5.3 Actualizar `CLAUDE.md` si el tema cambia de forma.
 - [ ] 5.4 Desplegar y comprobar en producción.
 - [ ] 5.5 `openspec validate` y `openspec archive`, y mover al roadmap lo que quede pendiente.
